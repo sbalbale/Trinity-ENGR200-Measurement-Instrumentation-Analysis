@@ -1,6 +1,3 @@
-# Trinity ENGR200 Measurement Instrumentation Analysis
-
-
 <div align="center" id="top"> 
   <img src="./.github/app.gif" alt="Trinity ENGR200 Measurement Instrumentation Analysis" />
 
