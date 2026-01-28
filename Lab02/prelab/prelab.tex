@@ -1,0 +1,77 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage[english]{babel}
+\usepackage[autostyle]{csquotes}
+
+% Adjust margins to be standard for an assignment
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% Header Information
+\noindent
+\textbf{ENGR 200 Pre-Lab 2} \\
+Sean Balbale \\
+Jan 30 2026
+
+\section*{Problem 1}
+
+According to the textbook, for a normal distribution, the area under the probability density function curve within the interval of $x' \pm 3\sigma$ covers 99.73\% of the population. Therefore, \textbf{99.73\%} of the data will lie within $\pm3$ standard deviations of the mean value.
+
+\section*{Problem 2}
+\textbf{The reading focused on the effect of random errors with a population behavior that was
+Gaussian.}
+
+\begin{itemize}
+  \item \textbf{If the population did not have a Gaussian distribution, can you still report and calculate the mean and standard deviation?}
+
+    Yes, you can still report and calculate them. As stated in Section 4.4, the equations for sample mean and sample standard deviation \enquote{are robust and are used regardless of the actual probability density function of the population.} They are statistical estimates of the central tendency and variation of the data set itself, not just parameters for a specific distribution type.
+
+  \item \textbf{If the population is not Gaussian, can you use table 4.3 to quantify a probability of being within a certain range of values for your population?}
+
+    No, you cannot. Table 4.3 provides probability values specifically for the \textbf{Normal Error Function}, which is derived from the integral of the probability density function for a normal (Gaussian) distribution. If the population is not Gaussian, the probability density function $p(x)$ would be different, and the areas under the curve (probabilities) corresponding to standard deviation intervals would not match the values in Table 4.3.
+\end{itemize}
+
+\section*{Problem 3}
+\textbf{The average value of a variable is 24 units, and the standard deviation is 2
+  units. If the population of this variable is normally distributed, what is the
+range of units in which 80\% of all measurements should fall?}
+\newline
+
+Since the normal distribution is symmetric about the mean, an 80\% probability range means that 40\% of the data lies between the mean and the upper limit, and 40\% lies between the mean and the lower limit. We need to find the $z_1$ value in Table 4.3 such that the one-sided probability $P(z_1) = 0.4000$.
+
+Using Table 4.3, we select the values that bracket 0.4000:
+\begin{itemize}
+  \item For $z_1 = 1.28$, $P = 0.3997$
+  \item For $z_1 = 1.29$, $P = 0.4015$
+\end{itemize}
+
+Interpolating to find $z_1$ for $P = 0.4000$:
+\[
+  z_1 \approx 1.28 + (1.29 - 1.28) \frac{0.4000 - 0.3997}{0.4015 - 0.3997}
+\]
+\[
+  z_1 \approx 1.28 + 0.01 \frac{0.0003}{0.0018}
+\]
+\[
+  z_1 \approx 1.28 + 0.01(0.1667)
+\]
+\[
+  z_1 \approx 1.2817
+\]
+
+Now we can calculate the range limits using $x = x' \pm z_1\sigma$:
+\[
+  \text{Upper Limit} = 24 + (1.2817 \times 2) = 24 + 2.563 = 26.56
+\]
+\[
+  \text{Lower Limit} = 24 - (1.2817 \times 2) = 24 - 2.563 = 21.44
+\]
+
+\noindent
+\textbf{Answer:} The range of units in which 80\% of all measurements should fall is approximately \textbf{21.44 to 26.56 units}.
+
+\end{document}
