@@ -1,5 +1,7 @@
 % Lab 2: Probability and Statistics in Data Analysis
 % Part 4 & 5: Data Analysis and Visualization
+% Author: Sean Balbale
+% Date: 1/30/2026
 
 clear; clc; close all;
 

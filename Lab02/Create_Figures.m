@@ -1,5 +1,7 @@
 % Engineering 200 - Lab 2: Data Analysis & Visualization
 % Generates 3 separate figures with Mean and +/- 3 Sigma overlays
+% Author: Sean Balbale
+% Date: 1/30/2026
 
 clear; clc; close all;
 

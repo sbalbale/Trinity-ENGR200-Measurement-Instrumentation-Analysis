@@ -5,6 +5,8 @@
   Max Samples: 300
 */
 
+#include <Arduino.h>
+
 // Variable to store the program start time in milliseconds
 unsigned long startTime;
 // Counter to track the number of samples collected

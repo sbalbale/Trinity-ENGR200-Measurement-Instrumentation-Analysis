@@ -1,11 +1,13 @@
 % Arduino Data Logger
 % Autosaves Serial data to a CSV file
+% Author: Sean Balbale
+% Date: 1/30/2026
 % ---------------------------------------------------------
 
 clear; clc;
 
 % --- CONFIGURATION ---
-portName = "COM3";      % CHANGE THIS to your actual Arduino Port (e.g., "COM3" or "/dev/tty...")
+portName = "COM3";      % Arduino Port (e.g., "COM3" or "/dev/tty...")
 baudRate = 9600;        % Match the Arduino baud rate
 fileName = "dataset_fixed.csv"; % Change this for each dataset (dataset_fast.csv, dataset_random.csv, dataset_fixed.csv)
 % ---------------------
