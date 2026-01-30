@@ -9,7 +9,7 @@ clear; clc;
 % --- CONFIGURATION ---
 portName = "COM3";      % Arduino Port (e.g., "COM3" or "/dev/tty...")
 baudRate = 9600;        % Match the Arduino baud rate
-fileName = "dataset_fixed.csv"; % Change this for each dataset (dataset_fast.csv, dataset_random.csv, dataset_fixed.csv)
+fileName = "dataset_random.csv"; % Change this for each dataset (dataset_fast.csv, dataset_random.csv, dataset_fixed.csv)
 % ---------------------
 
 % 1. Connect to Arduino
