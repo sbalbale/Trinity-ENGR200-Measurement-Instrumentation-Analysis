@@ -1,0 +1,23 @@
+--------------------------------------------------
+Statistics for Dataset 1: Fixed-Rate (dataset_fixed.csv)
+--------------------------------------------------
+Number of Samples (N): 100
+Mean:                  355.9200
+Standard Deviation:    262.9668
+Variance:              69151.5491
+
+--------------------------------------------------
+Statistics for Dataset 2: High-Rate (dataset_fast.csv)
+--------------------------------------------------
+Number of Samples (N): 300
+Mean:                  333.5533
+Standard Deviation:    33.4008
+Variance:              1115.6125
+
+--------------------------------------------------
+Statistics for Dataset 3: Random (dataset_random.csv)
+--------------------------------------------------
+Number of Samples (N): 30
+Mean:                  321.0667
+Standard Deviation:    41.3070
+Variance:              1706.2713
