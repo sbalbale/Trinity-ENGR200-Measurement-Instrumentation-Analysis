@@ -1,0 +1,121 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{Lab 2: Probability and Statistics in Data Analysis}
+\author{Sean Balbale}
+\date{January 30, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 2}
+
+    \LARGE
+    Probability and Statistics in Data Analysis
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} January 30, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% ITEM 1: MATLAB OUTPUT (NUMERICAL RESULTS)
+% ----------------------------------------------------------------------
+\section{MATLAB Output (Numerical Results)}
+
+The statistical analysis for the three acquired datasets is summarized in Table~\ref{tab:stats}.
+
+\begin{table}[H]
+  \centering
+  \caption{Statistical Summary of Acquired Datasets}
+  \label{tab:stats}
+  \begin{tabular}{lSSS}
+    \toprule
+    \textbf{Metric} & {\textbf{Dataset 1}} & {\textbf{Dataset 2}} & {\textbf{Dataset 3}} \\
+    & {(Fixed-Rate)} & {(High-Rate)} & {(Random)} \\
+    \midrule
+    Samples ($N$) & 100 & 300 & 30 \\
+    Mean ($\mu$) & 355.9200 & 333.5533 & 321.0667 \\
+    Std Dev ($\sigma$) & 262.9668 & 33.4008 & 41.3070 \\
+    Variance ($\sigma^2$) & {69,151.55} & {1,115.61} & {1,706.27} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ----------------------------------------------------------------------
+% ITEM 2: HISTOGRAMS (PART 1)
+% ----------------------------------------------------------------------
+\section{Histograms (PDF Estimates)}
+
+The normalized histograms (PDF estimates) for each sampling strategy are presented below. The mean ($\mu$) is indicated by a solid red line, and the $\pm 3\sigma$ bounds are indicated by dashed blue lines.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{FixedRate.png}
+  \caption{Dataset 1: Fixed-Rate Sampling Histogram. The wide distribution reflects the full rail-to-rail drift captured over the longer duration.}
+  \label{fig:fixed}
+\end{figure}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% ITEM 2: HISTOGRAMS (PART 2)
+% ----------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{HighRate.png}
+  \caption{Dataset 2: High-Rate Sampling Histogram. The tight clustering indicates high short-term correlation.}
+  \label{fig:high}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{RandomRate.png}
+  \caption{Dataset 3: Random Interval Sampling Histogram. This distribution best approximates the stationary noise process.}
+  \label{fig:random}
+\end{figure}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% ITEM 3: WRITTEN RESPONSES (PART 5)
+% ----------------------------------------------------------------------
+\section{Written Responses to Questions}
+
+\textbf{1. How does the sampling method affect the shape of the PDF?} \\
+The sampling strategy fundamentally dictates the observed distribution. Dataset 2 (High-Rate) exhibited a highly concentrated PDF (variance $\approx 1,115$), indicating that at high sampling frequencies, the system captures a correlated "local" snapshot rather than the full stochastic range. Conversely, Dataset 1 (Fixed-Rate) displayed a massive variance ($>69,000$) and a near-uniform distribution. This occurs because the lower sampling rate extends the observation window, allowing the floating pin voltage to drift across its entire rail-to-rail range ($0$--$1023$).
+
+\textbf{2. Are the mean values consistent across the three datasets?} \\
+While the means remain within the same order of magnitude ($\approx 320 - 356$), they are not strictly consistent. Dataset 1 had a noticeably higher mean ($\approx 356$) compared to Dataset 2 ($\approx 334$) and Dataset 3 ($\approx 321$). This discrepancy in Dataset 1 highlights a trade-off: lower sampling rates capture larger excursions (positive drift), vitiating the stationarity assumption that holds for shorter or randomized bursts.
+
+\textbf{3. What percentage of the data lies within $\pm 3\sigma$ for each dataset?} \\
+For \textbf{Dataset 1}, the standard deviation is $\sigma \approx 263$. The $3\sigma$ interval spans $\pm 789$ around the mean, covering the range $[-433, 1145]$. Since the ADC is hardware-limited to $[0, 1023]$, \textbf{100\%} of the data falls within this range. For \textbf{Datasets 2 and 3}, the distributions are tighter. Visual inspection suggests that while they approach a Gaussian form, transient outliers likely result in slightly less than the theoretical 99.7\% falling within the bounds.
+
+\textbf{4. Which sampling method best represents the underlying signal?} \\
+\textbf{Dataset 3 (Random Sampling)} provides the most robust statistical representation. While Dataset 2 offers high temporal resolution, it suffers from autocorrelation—each sample biases the next. Dataset 1 is susceptible to aliasing from periodic noise (e.g., \SI{60}{\hertz} mains hum). Random sampling effectively decouples the data acquisition from both periodic noise sources and short-term drift, yielding a more accurate estimate of the signal's central tendency despite the smaller sample size ($N=30$).
+
+\end{document}
