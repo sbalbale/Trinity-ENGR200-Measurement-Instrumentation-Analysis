@@ -1,0 +1,130 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 3}
+\author{Sean Balbale}
+\date{February 3, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Pre-Lab 3}
+
+    \LARGE
+    Uncertainty Analysis
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} February 6, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% PROBLEM 1
+% ----------------------------------------------------------------------
+\section*{Problem 1: Reporting Significant Figures}
+
+\textbf{Prompt:} You are reading the reported results from an experiment, which lists a value for the length of a part as $53.087 \pm 1.2$ \si{\centi\meter}. Comment on what is wrong with this reported value and what should be given instead.
+
+\textbf{Analysis:}
+The reported value ($53.087$) claims precision to the thousandths place, while the uncertainty ($1.2$) indicates that the measurement is only reliable to the tenths (or arguably the ones) place. Reporting digits beyond the magnitude of the uncertainty implies a level of precision that does not exist, vitiating the statistical validity of the result.
+
+\textbf{Correction:}
+The uncertainty determines the last significant digit of the reported value.
+\begin{enumerate}
+  \item Round the uncertainty to one significant figure: $\pm 1$ \si{\centi\meter}.
+  \item Round the measurement to the corresponding decimal place (the ones place): $53$ \si{\centi\meter}.
+\end{enumerate}
+
+\textbf{Corrected Result:}
+\[ L = 53 \pm 1 \text{ \si{\centi\meter}} \]
+
+% ----------------------------------------------------------------------
+% PROBLEM 2
+% ----------------------------------------------------------------------
+\section*{Problem 2: Calculating Instrumentation Uncertainty}
+
+\textbf{Prompt:} You are measuring the length of the side of a surface with digital calipers. The calipers have a reported accuracy of 0.1\% of the measurement with a screen resolution of 0.1 mm. What is the uncertainty of a measurement of 10.00 cm?
+
+\textbf{Given:}
+\begin{itemize}
+  \item Measurement ($L$) = \SI{10.00}{\centi\meter}
+  \item Accuracy ($u_{acc}$) = $0.1\%$ of reading
+  \item Resolution ($u_{res}$) = \SI{0.1}{\milli\meter} = \SI{0.01}{\centi\meter}
+\end{itemize}
+
+\textbf{Calculation:}
+The total uncertainty $u_L$ is the Root Sum Square (RSS) of the systematic accuracy uncertainty and the resolution uncertainty.
+
+1. Calculate accuracy component:
+\[ u_{acc} = 0.001 \times 10.00 \text{ \si{\centi\meter}} = 0.01 \text{ \si{\centi\meter}} \]
+
+2. Calculate resolution component:
+\[ u_{res} = 0.01 \text{ \si{\centi\meter}} \]
+
+3. Calculate total uncertainty:
+\[ u_L = \sqrt{u_{acc}^2 + u_{res}^2} = \sqrt{(0.01)^2 + (0.01)^2} = \sqrt{0.0002} \approx 0.0141 \text{ \si{\centi\meter}} \]
+
+\textbf{Answer:}
+The uncertainty is $\pm 0.014$ \si{\centi\meter}.
+
+% ----------------------------------------------------------------------
+% PROBLEM 3
+% ----------------------------------------------------------------------
+\section*{Problem 3: Propagation of Uncertainty}
+
+\textbf{Prompt:} Using the calipers from Problem 2, you are estimating the area of a rectangular plate. You measure the base to have a length of $l_b = 20.26$ cm and the height to have a height of $l_h = 9.60$ cm. How would you report the area of your rectangular plate, including your uncertainty?
+
+\textbf{1. Calculate the Area ($A$):}
+\[ A = l_b \times l_h = 20.26 \text{ \si{\centi\meter}} \times 9.60 \text{ \si{\centi\meter}} = 194.496 \text{ \si{\square\centi\meter}} \]
+
+\textbf{2. Calculate Component Uncertainties:}
+Using the method from Problem 2 ($u = \sqrt{u_{acc}^2 + u_{res}^2}$):
+
+\textit{For Base ($l_b = 20.26$ \si{\centi\meter}):}
+\[ u_{acc,b} = 0.001 \times 20.26 = 0.02026 \text{ \si{\centi\meter}} \]
+\[ u_b = \sqrt{(0.02026)^2 + (0.01)^2} \approx 0.0226 \text{ \si{\centi\meter}} \]
+
+\textit{For Height ($l_h = 9.60$ \si{\centi\meter}):}
+\[ u_{acc,h} = 0.001 \times 9.60 = 0.0096 \text{ \si{\centi\meter}} \]
+\[ u_h = \sqrt{(0.0096)^2 + (0.01)^2} \approx 0.0139 \text{ \si{\centi\meter}} \]
+
+\textbf{3. Propagate Uncertainty to Area ($u_A$):}
+For a product $A = l_b \cdot l_h$, the relative uncertainty is calculated using RSS:
+\[ \frac{u_A}{A} = \sqrt{\left(\frac{u_b}{l_b}\right)^2 + \left(\frac{u_h}{l_h}\right)^2} \]
+
+Substituting values:
+\[ \frac{u_b}{l_b} = \frac{0.0226}{20.26} \approx 0.001115 \]
+\[ \frac{u_h}{l_h} = \frac{0.0139}{9.60} \approx 0.001448 \]
+
+\[ \frac{u_A}{A} = \sqrt{(0.001115)^2 + (0.001448)^2} \approx \sqrt{1.24 \times 10^{-6} + 2.10 \times 10^{-6}} \approx 0.00183 \]
+
+\[ u_A = A \times 0.00183 = 194.496 \times 0.00183 \approx 0.356 \text{ \si{\square\centi\meter}} \]
+
+Rounding the uncertainty to one significant figure ($0.4$) and the area to the corresponding decimal place (tenths):
+
+\[ A = 194.5 \pm 0.4 \text{ \si{\square\centi\meter}} \]
+
+\end{document}
