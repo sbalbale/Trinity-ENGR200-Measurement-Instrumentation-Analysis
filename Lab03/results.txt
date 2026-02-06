@@ -1,0 +1,39 @@
+--- Global Parameters ---
+ADC Resolution: 0.00489 V
+Resolution Uncertainty (u_B): 0.00141 V
+-------------------------
+
+Processing File: Lab3_Data_Floating_N50.csv
+  Number of Samples (N): 49
+  Mean Voltage: 2.1186 V
+  Standard Deviation: 0.0563 V
+  Uncertainty of the Mean (u_A): 0.00804 V
+  Combined Standard Uncertainty (u_c): 0.00817 V
+
+Processing File: Lab3_Data_Floating_N200.csv
+  Number of Samples (N): 199
+  Mean Voltage: 2.2735 V
+  Standard Deviation: 0.2219 V
+  Uncertainty of the Mean (u_A): 0.01573 V
+  Combined Standard Uncertainty (u_c): 0.01579 V
+
+Processing File: Lab3_Data_Floating_N300.csv
+  Number of Samples (N): 299
+  Mean Voltage: 1.4946 V
+  Standard Deviation: 0.1906 V
+  Uncertainty of the Mean (u_A): 0.01102 V
+  Combined Standard Uncertainty (u_c): 0.01111 V
+
+Processing File: Lab3_Data_Stable_N200.csv
+  Number of Samples (N): 199
+  Mean Voltage: 0.0000 V
+  Standard Deviation: 0.0000 V
+  Uncertainty of the Mean (u_A): 0.00000 V
+  Combined Standard Uncertainty (u_c): 0.00141 V
+
+Processing File: Lab3_Data_Stable_N300.csv
+  Number of Samples (N): 299
+  Mean Voltage: 0.0000 V
+  Standard Deviation: 0.0000 V
+  Uncertainty of the Mean (u_A): 0.00000 V
+  Combined Standard Uncertainty (u_c): 0.00141 V
