@@ -324,12 +324,12 @@ We report the final values based on the magnitude of the uncertainty. The uncert
 \textbf{Floating ($N=299$):}
 \[ u_c = 0.01111 \rightarrow 0.01 \text{ V} \]
 \[ \text{Mean} = 1.4946 \rightarrow 1.49 \text{ V} \]
-\[ \mathbf{V_{float} = 1.49 \pm 0.01 \text{ V} \quad (95\% \text{ confidence})} \]
+\[ \mathbf{V_{float} = 1.49 \pm 0.01 \text{ V} } \]
 
 \textbf{Stable ($N=199$):}
 \[ u_c = 0.00141 \rightarrow 0.001 \text{ V} \]
 \[ \text{Mean} = 0.0000 \rightarrow 0.000 \text{ V} \]
-\[ \mathbf{V_{stable} = 0.000 \pm 0.001 \text{ V} \quad (95\% \text{ confidence})} \]
+\[ \mathbf{V_{stable} = 0.000 \pm 0.001 \text{ V} } \]
 
 \section{Conclusion}
 This laboratory demonstrated the critical distinction between resolution and accuracy. While the Arduino ADC has a fixed resolution uncertainty of $\SI{1.41}{\milli\volt}$, the total measurement uncertainty is heavily influenced by the signal-to-noise ratio. For noisy signals, Type A uncertainty dominates and can be mitigated—but not eliminated—by increasing sample size. For stable signals, the system hits a "noise floor" defined by the hardware resolution (Type B). Engineers must therefore prioritize signal conditioning (filtering/shielding) before relying on statistical post-processing to improve measurement confidence.
