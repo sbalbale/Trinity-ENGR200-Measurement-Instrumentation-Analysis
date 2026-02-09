@@ -1,0 +1,359 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% PGFPlots configuration
+\pgfplotsset{compat=1.18}
+\pgfplotsset{
+  standard/.style={
+    width=0.85\textwidth,
+    height=0.35\textwidth, % Slightly shorter to fit more on a page
+    grid=both,
+    grid style={line width=.1pt, draw=gray!20},
+    major grid style={line width=.2pt,draw=gray!50},
+    xlabel={Time (ms)},
+    ylabel={Voltage (V)},
+    legend pos=north east,
+    legend style={font=\footnotesize},
+    tick align=outside,
+    tick pos=left,
+    scaled ticks=false
+  }
+}
+
+% Code listing style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{Lab 3: Uncertainty in Measurements and Data}
+\author{Sean Balbale}
+\date{February 9, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 3}
+
+    \LARGE
+    Uncertainty in Measurements and Data
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} Engineering 200
+    \\ \textbf{Instructor:} Prof. Ruoxing Gao
+    \\ \textbf{Date:} February 9, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+\section{Introduction}
+Engineering decision-making relies not merely on acquiring data, but on quantifying the confidence associated with that data. In this laboratory, we investigated the stochastic properties of measurement systems by analyzing voltage signals acquired via an Arduino Mega 2560. The objective was to differentiate between systematic (Type B) and random (Type A) uncertainties, understand how sample size ($N$) influences measurement confidence, and rigorously propagate these uncertainties to report a final result with appropriate significant figures.
+
+\section{Methodology}
+The system architecture consisted of an ELEGOO Arduino Mega 2560 interfacing with a host workstation via USB serial communication. The acquisition logic was implemented in C++ (\texttt{data\_sender.ino}), while data logging and statistical post-processing were handled in MATLAB (\texttt{recordData.m}). The experimental procedure followed the protocols outlined in the course laboratory manual [1].
+
+Two distinct signal conditions were analyzed to isolate different uncertainty sources:
+\begin{enumerate}
+  \item \textbf{Floating Input Condition:} Pin \texttt{A0} was left unconnected. This high-impedance state acts as an antenna, susceptible to electromagnetic interference (EMI) and thermal noise , generating a signal dominated by random fluctuation.
+  \item \textbf{Stable Input Condition:} Pin \texttt{A0} was connected to ground (GND). This creates a low-noise condition where the dominant error source is expected to be the quantization resolution of the Analog-to-Digital Converter (ADC).
+\end{enumerate}
+
+Data sets of varying sizes ($N=50, 200, 300$) were collected. The analysis focused on computing the mean ($\bar{x}$), standard deviation ($S_x$), standard error of the mean ($u_A$), and the combined standard uncertainty ($u_c$).
+
+\section{Theoretical Background}
+\subsection{Type A Uncertainty ($u_A$)}
+Type A uncertainty arises from random variations in the measurement process. It is quantified statistically using the standard deviation of the mean:
+\begin{equation}
+  u_A = \frac{S_x}{\sqrt{N}}
+\end{equation}
+where $S_x$ is the sample standard deviation and $N$ is the number of samples. This metric represents the confidence that the sample mean approximates the true population mean.
+
+\subsection{Type B Uncertainty ($u_B$)}
+Type B uncertainty is derived from non-statistical sources, primarily instrument specifications. For a digital system like the Arduino, the resolution uncertainty is determined by the quantization step size ($Q$). The Arduino Mega uses a 10-bit ADC with a reference voltage $V_{ref} = \SI{5.0}{\volt}$:
+\begin{equation}
+  Q = \frac{V_{ref}}{2^{10}-1} = \frac{5.0}{1023} \approx \SI{4.89}{\milli\volt}
+\end{equation}
+Assuming a uniform probability distribution for the quantization error, the standard uncertainty is:
+\begin{equation}
+  u_B = \frac{Q}{\sqrt{12}} \approx \SI{1.41}{\milli\volt}
+\end{equation}
+
+\subsection{Combined Uncertainty ($u_c$)}
+The total uncertainty is the Root Sum Square (RSS) of the independent components:
+\begin{equation}
+  u_c = \sqrt{u_A^2 + u_B^2}
+\end{equation}
+
+\section{Results}
+
+\subsection{Instrument Specifications}
+The baseline uncertainty for the measurement system is defined by the hardware architecture.
+
+\begin{table}[H]
+  \centering
+  \caption{ADC Parameters and Type B Uncertainty}
+  \label{tab:typeB}
+  \begin{tabular}{lc}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    ADC Bit Depth & 10-bit \\
+    Reference Voltage ($V_{ref}$) & \SI{5.00}{\volt} \\
+    Resolution ($Q$) & \SI{4.89}{\milli\volt} \\
+    \textbf{Type B Uncertainty ($u_B$)} & \textbf{\SI{1.41}{\milli\volt}} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Floating Input Analysis (High Noise)}
+The floating input data exhibited significant variance due to environmental noise. Table~\ref{tab:floating} summarizes the statistical progression across all sample sizes.
+
+\begin{table}[H]
+  \centering
+  \caption{Statistical Results for Floating Input (Type A Dominant)}
+  \label{tab:floating}
+  \begin{tabular}{lSSS}
+    \toprule
+    \textbf{Metric} & {\textbf{N = 49}} & {\textbf{N = 199}} & {\textbf{N = 299}} \\
+    \midrule
+    Mean Voltage ($\bar{x}$) [\si{\volt}] & 2.1186 & 2.2735 & 1.4946 \\
+    Std Dev ($S_x$) [\si{\volt}] & 0.0563 & 0.2219 & 0.1906 \\
+    Uncertainty of Mean ($u_A$) [\si{\volt}] & 0.00804 & 0.01573 & 0.01102 \\
+    Type B Uncertainty ($u_B$) [\si{\volt}] & 0.00141 & 0.00141 & 0.00141 \\
+    \textbf{Combined Uncertainty ($u_c$) [\si{\volt}]} & \textbf{0.00817} & \textbf{0.01579} & \textbf{0.01111} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The following figures illustrate the raw data for all three Floating datasets, highlighting the stochastic nature of the noise.
+
+% --- FIGURE: Floating N=50 ---
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        standard,
+        title={Floating Input ($N=49$)},
+        ymin=1.8, ymax=2.4,
+      ]
+      \addplot [color=blue, only marks, mark size=1.5pt, mark=*, opacity=0.6]
+      table [x index=0, y expr=\thisrowno{1}*5.0/1023, col sep=comma] {../Lab3_Data_Floating_N50.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Floating Input Signal ($N=49$). Short duration capture showing local drift.}
+  \label{fig:float_50}
+\end{figure}
+
+% --- FIGURE: Floating N=200 ---
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        standard,
+        title={Floating Input ($N=199$)},
+        ymin=1.0, ymax=3.0,
+      ]
+      \addplot [color=blue, only marks, mark size=1.5pt, mark=*, opacity=0.6]
+      table [x index=0, y expr=\thisrowno{1}*5.0/1023, col sep=comma] {../Lab3_Data_Floating_N200.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Floating Input Signal ($N=199$). As sample size increases, the signal drifts over a wider range.}
+  \label{fig:float_200}
+\end{figure}
+
+% --- FIGURE: Floating N=300 ---
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        standard,
+        title={Floating Input ($N=299$)},
+        ymin=0, ymax=3,
+      ]
+      \addplot [color=blue, only marks, mark size=1.5pt, mark=*, opacity=0.6]
+      table [x index=0, y expr=\thisrowno{1}*5.0/1023, col sep=comma] {../Lab3_Data_Floating_N300.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Floating Input Signal ($N=299$). The data points exhibit wide scatter due to stochastic noise pickup.}
+  \label{fig:float_300}
+\end{figure}
+
+% --- FIGURE: Histogram N=300 ---
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=0.4\textwidth,
+        ymin=0,
+        xmin=0, xmax=3.0,
+        xlabel={Voltage (V)},
+        ylabel={Frequency},
+        grid=both,
+        title={Histogram of Floating Input Data ($N=299$)},
+      ]
+      \addplot [
+        hist={bins=20},
+        fill=blue!20,
+        draw=blue!80
+      ] table [x index=0, y expr=\thisrowno{1}*5.0/1023, col sep=comma] {../Lab3_Data_Floating_N300.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Histogram of Floating Input Data ($N=299$). The distribution approximates a Gaussian curve, confirming the random nature of the noise.}
+  \label{fig:floating_hist}
+\end{figure}
+
+\subsection{Stable Input Analysis (Low Noise)}
+When grounded, the system noise floor dropped below the ADC resolution. Table~\ref{tab:stable} summarizes results for both tested sample sizes.
+
+\begin{table}[H]
+  \centering
+  \caption{Statistical Results for Stable Input (Type B Dominant)}
+  \label{tab:stable}
+  \begin{tabular}{lSS}
+    \toprule
+    \textbf{Metric} & {\textbf{N = 199}} & {\textbf{N = 299}} \\
+    \midrule
+    Mean Voltage ($\bar{x}$) [\si{\volt}] & 0.0000 & 0.0000 \\
+    Std Dev ($S_x$) [\si{\volt}] & 0.0000 & 0.0000 \\
+    Uncertainty of Mean ($u_A$) [\si{\volt}] & 0.0000 & 0.0000 \\
+    Type B Uncertainty ($u_B$) [\si{\volt}] & 0.00141 & 0.00141 \\
+    \textbf{Combined Uncertainty ($u_c$) [\si{\volt}]} & \textbf{0.00141} & \textbf{0.00141} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% --- FIGURE: Stable N=200 ---
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        standard,
+        title={Stable Input ($N=199$)},
+        ymin=-0.05, ymax=0.05,
+        ytick={-0.05, 0, 0.05},
+      ]
+      \addplot [color=red, only marks, mark size=1.5pt, mark=*]
+      table [x index=0, y expr=\thisrowno{1}*5.0/1023, col sep=comma] {../Lab3_Data_Stable_N200.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Stable Input Signal ($N=199$). Flatline at \SI{0}{\volt}.}
+  \label{fig:stable_200}
+\end{figure}
+
+% --- FIGURE: Stable N=300 ---
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        standard,
+        title={Stable Input ($N=299$)},
+        ymin=-0.05, ymax=0.05,
+        ytick={-0.05, 0, 0.05},
+      ]
+      \addplot [color=red, only marks, mark size=1.5pt, mark=*]
+      table [x index=0, y expr=\thisrowno{1}*5.0/1023, col sep=comma] {../Lab3_Data_Stable_N300.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Stable Input Signal ($N=299$). Even with increased sampling, no variance is observed above the resolution limit.}
+  \label{fig:stable_300}
+\end{figure}
+
+\section{Discussion and Interpretation}
+
+\subsection{1. Dominant Sources of Uncertainty}
+The dominant source of uncertainty is context-dependent.
+\begin{itemize}
+  \item \textbf{Floating Input:} Type A uncertainty ($u_A$) dominates. For the $N=299$ dataset, $u_A \approx \SI{11.0}{\milli\volt}$, which is nearly an order of magnitude larger than the Type B uncertainty ($\SI{1.41}{\milli\volt}$). The high impedance of the floating pin makes the system highly sensitive to stochastic environmental noise.
+  \item \textbf{Stable Input:} Type B uncertainty ($u_B$) dominates. With the pin grounded, the signal variation ($S_x$) dropped to zero (within the limits of the ADC). Consequently, $u_A \rightarrow 0$, leaving the quantization error as the sole contributor to uncertainty ($u_c = u_B = \SI{1.41}{\milli\volt}$).
+\end{itemize}
+
+\subsection{2. Effect of Experimental Conditions on Uncertainty}
+Increasing the sample size $N$ generally attenuates the Type A uncertainty, as $u_A \propto 1/\sqrt{N}$. However, the data reveals that input stability is a far more critical factor. Switching from a floating input to a stable input reduced the combined uncertainty from $\approx \SI{11}{\milli\volt}$ to $\SI{1.4}{\milli\volt}$. This demonstrates that while statistical averaging improves precision, it cannot compensate for a fundamentally noisy signal environment or poor signal conditioning.
+
+\subsection{3. Can Averaging Reduce All Types of Uncertainty?}
+No. Averaging effectively reduces random (Type A) errors because random fluctuations tend to cancel out as $N \rightarrow \infty$. However, averaging has no effect on systematic (Type B) errors such as calibration bias or resolution limits. As seen in Table~\ref{tab:stable}, even if we sampled the stable signal infinitely, the uncertainty would never drop below the resolution limit of $\SI{1.41}{\milli\volt}$ without applying dithering techniques.
+
+\subsection{4. Reliability and Data Selection}
+The \textbf{Stable Dataset ($N=199$)} provides the most reliable measurement of the intended physical quantity (Ground). The floating datasets, while useful for characterizing noise, exhibit significant drift (Mean varying from \SI{1.49}{\volt} to \SI{2.27}{\volt}), rendering them unreliable for measuring a specific DC voltage.
+
+\subsection{5. Significant Figures and Reporting}
+We report the final values based on the magnitude of the uncertainty. The uncertainty is rounded to one or two significant figures, and the mean is rounded to the same decimal place.
+
+\textbf{Floating ($N=299$):}
+\[ u_c = 0.01111 \rightarrow 0.01 \text{ V} \]
+\[ \text{Mean} = 1.4946 \rightarrow 1.49 \text{ V} \]
+\[ \mathbf{V_{float} = 1.49 \pm 0.01 \text{ V} \quad (95\% \text{ confidence})} \]
+
+\textbf{Stable ($N=199$):}
+\[ u_c = 0.00141 \rightarrow 0.001 \text{ V} \]
+\[ \text{Mean} = 0.0000 \rightarrow 0.000 \text{ V} \]
+\[ \mathbf{V_{stable} = 0.000 \pm 0.001 \text{ V} \quad (95\% \text{ confidence})} \]
+
+\section{Conclusion}
+This laboratory demonstrated the critical distinction between resolution and accuracy. While the Arduino ADC has a fixed resolution uncertainty of $\SI{1.41}{\milli\volt}$, the total measurement uncertainty is heavily influenced by the signal-to-noise ratio. For noisy signals, Type A uncertainty dominates and can be mitigated—but not eliminated—by increasing sample size. For stable signals, the system hits a "noise floor" defined by the hardware resolution (Type B). Engineers must therefore prioritize signal conditioning (filtering/shielding) before relying on statistical post-processing to improve measurement confidence.
+
+\section{References}
+\begin{thebibliography}{1}
+  \bibitem{lab3}
+  Ruoxing Gao, ``Laboratory \#3 Uncertainty in Measurements and Data (Arduino-compatible Board),'' Trinity College, Hartford, CT, Spring 2026.
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{MATLAB Code}
+The following scripts were used for data acquisition and analysis.
+
+\subsection{recordData.m}
+\lstinputlisting[language=Matlab]{../recordData.m}
+
+\subsection{multianalysis.m}
+\lstinputlisting[language=Matlab]{../multianalysis.m}
+
+\section{Arduino Code}
+The following code was uploaded to the Arduino Mega 2560 to generate the voltage signals for both the floating and stable input conditions.
+\subsection{data\_sender.ino}
+\lstinputlisting[language=C]{../data_sender/data_sender.ino}
+
+\end{document}
