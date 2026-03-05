@@ -1,0 +1,167 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 4}
+\author{Sean Balbale}
+\date{March 4, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Pre-Lab 4}
+
+    \LARGE
+    Fourier Analysis
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} March 6, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% PROBLEM 1
+% ----------------------------------------------------------------------
+\section*{Problem 1: Average and RMS Values}
+
+\textbf{Prompt:} A signal has the functional form of $y(t) = 5 + 7 \sin(3\pi t)$, where $t$ is in seconds. Determine the average and rms values over various time periods, and describe what this indicates.
+
+\textbf{Analytical Derivations:}
+
+The average value ($y_{avg}$) of a continuous signal over period $T$ is:
+\[ y_{avg} = \frac{1}{T} \int_0^T y(t) dt \]
+Substituting $y(t)$:
+\[ y_{avg} = \frac{1}{T} \int_0^T (5 + 7 \sin(3\pi t)) dt = \frac{1}{T} \left[ 5t - \frac{7}{3\pi} \cos(3\pi t) \right]_0^T \]
+\[ y_{avg} = \frac{1}{T} \left( 5T - \frac{7}{3\pi} \cos(3\pi T) - \left( 0 - \frac{7}{3\pi}(1) \right) \right) = 5 - \frac{7}{3\pi T} (\cos(3\pi T) - 1) \]
+
+The RMS value ($y_{rms}$) squared is:
+\[ y_{rms}^2 = \frac{1}{T} \int_0^T [y(t)]^2 dt = \frac{1}{T} \int_0^T (5 + 7 \sin(3\pi t))^2 dt \]
+Expanding the integrand:
+\[ (5 + 7 \sin(3\pi t))^2 = 25 + 70 \sin(3\pi t) + 49 \sin^2(3\pi t) \]
+Applying the half-angle identity $\sin^2(\theta) = \frac{1 - \cos(2\theta)}{2}$:
+\[ 49 \sin^2(3\pi t) = 24.5 - 24.5 \cos(6\pi t) \]
+Substituting back into the integral:
+\[ y_{rms}^2 = \frac{1}{T} \int_0^T \left( 49.5 + 70 \sin(3\pi t) - 24.5 \cos(6\pi t) \right) dt \]
+\[ y_{rms}^2 = \frac{1}{T} \left[ 49.5t - \frac{70}{3\pi} \cos(3\pi t) - \frac{24.5}{6\pi} \sin(6\pi t) \right]_0^T \]
+\[ y_{rms}^2 = 49.5 - \frac{70}{3\pi T} (\cos(3\pi T) - 1) - \frac{24.5}{6\pi T} \sin(6\pi T) \]
+
+\textbf{Calculations by Time Period:}
+
+\textbf{a) $0 \le t \le 1$ ($T = 1$)}
+\begin{itemize}
+\item $y_{avg} = 5 - \frac{7}{3\pi(1)} (-1 - 1) = 5 + \frac{14}{3\pi} = \mathbf{6.485}$
+\item $y_{rms}^2 = 49.5 - \frac{70}{3\pi} (-2) - 0 = 49.5 + \frac{140}{3\pi} = 64.354 \implies y_{rms} = \sqrt{64.354} = \mathbf{8.022}$
+\end{itemize}
+
+\textbf{b) $0 \le t \le 1.5$ ($T = 1.5$)}
+\begin{itemize}
+\item $y_{avg} = 5 - \frac{7}{4.5\pi} (0 - 1) = 5 + \frac{7}{4.5\pi} = \mathbf{5.495}$
+\item $y_{rms}^2 = 49.5 - \frac{70}{4.5\pi} (-1) - 0 = 49.5 + \frac{70}{4.5\pi} = 54.452 \implies y_{rms} = \sqrt{54.452} = \mathbf{7.379}$
+\end{itemize}
+
+\textbf{c) $0 \le t \le 2.5$ ($T = 2.5$)}
+\begin{itemize}
+\item $y_{avg} = 5 - \frac{7}{7.5\pi} (0 - 1) = 5 + \frac{7}{7.5\pi} = \mathbf{5.297}$
+\item $y_{rms}^2 = 49.5 - \frac{70}{7.5\pi} (-1) = 49.5 + \frac{70}{7.5\pi} = 52.471 \implies y_{rms} = \sqrt{52.471} = \mathbf{7.244}$
+\end{itemize}
+
+\textbf{d) $0 \le t \le 10.5$ ($T = 10.5$)}
+\begin{itemize}
+\item $y_{avg} = 5 - \frac{7}{31.5\pi} (-1) = 5 + \frac{7}{31.5\pi} = \mathbf{5.071}$
+\item $y_{rms}^2 = 49.5 - \frac{70}{31.5\pi} (-1) = 49.5 + \frac{70}{31.5\pi} = 50.207 \implies y_{rms} = \sqrt{50.207} = \mathbf{7.086}$
+\end{itemize}
+
+\textbf{e) $0 \le t \le 19.5$ ($T = 19.5$)}
+\begin{itemize}
+\item $y_{avg} = 5 - \frac{7}{58.5\pi} (-1) = 5 + \frac{7}{58.5\pi} = \mathbf{5.038}$
+\item $y_{rms}^2 = 49.5 - \frac{70}{58.5\pi} (-1) = 49.5 + \frac{70}{58.5\pi} = 49.881 \implies y_{rms} = \sqrt{49.881} = \mathbf{7.063}$
+\end{itemize}
+
+\textbf{f) Conceptual Indication} \\
+When calculating properties of fluctuating signals, sampling over short or non-integer multiple time periods causes significant error (spectral leakage/truncation error). As the sampling time $T$ increases ($1.5 \to 10.5 \to 19.5$), the edge effects of capturing partial sine wave cycles become mathematically negligible. The measured $y_{avg}$ converges to the true theoretical continuous average (the DC offset of $5$) and the measured $y_{rms}$ converges to the true theoretical continuous RMS ($\sqrt{5^2 + 7^2/2} = \sqrt{49.5} \approx 7.036$).
+
+% ----------------------------------------------------------------------
+% PROBLEM 2
+% ----------------------------------------------------------------------
+\section*{Problem 2: Frequency and Energy Identification}
+
+\textbf{Prompt:} Given a signal $y(t) = \sin(2\pi t) + 3\sin(7\pi t) + 0.4\sin(9\pi t)$, what frequencies would show up as containing energy, and rank the amount of energy for each frequency from highest to lowest.
+
+\textbf{Step 1: Identify Frequencies} \\
+The standard form for a sine wave is $A\sin(2\pi f t)$. By matching this up, we extract the linear frequencies ($f$):
+\begin{enumerate}
+\item $2\pi t \implies f_1 = 1 \text{ Hz}$ (Amplitude $A_1 = 1$)
+\item $7\pi t \implies 2\pi f_2 = 7\pi \implies f_2 = 3.5 \text{ Hz}$ (Amplitude $A_2 = 3$)
+\item $9\pi t \implies 2\pi f_3 = 9\pi \implies f_3 = 4.5 \text{ Hz}$ (Amplitude $A_3 = 0.4$)
+\end{enumerate}
+
+\textbf{Step 2: Rank the Energy} \\
+The spectral energy (power) contained in each frequency component is proportional to the square of its amplitude ($E \propto A^2$).
+\begin{itemize}
+\item Energy at $3.5\text{ Hz} \propto (3)^2 = 9$
+\item Energy at $1\text{ Hz} \propto (1)^2 = 1$
+\item Energy at $4.5\text{ Hz} \propto (0.4)^2 = 0.16$
+\end{itemize}
+
+\textbf{Answer:} \\
+Frequencies containing energy: \textbf{1 Hz, 3.5 Hz, and 4.5 Hz.} \\
+Ranking from highest to lowest energy: \textbf{3.5 Hz $>$ 1 Hz $>$ 4.5 Hz.}
+
+% ----------------------------------------------------------------------
+% PROBLEM 3
+% ----------------------------------------------------------------------
+\section*{Problem 3: Timbre and Power Spectrums}
+
+\textbf{Prompt:} Imagine a trumpet and a flute both play the same note at the same volume. Based on your reading, speculate about the difference in the power spectrum of each of these sound signals.
+
+\textbf{Analysis:} \\
+Even though both the trumpet and the flute are playing the same note (meaning they share the exact same \textit{fundamental frequency}), their power spectrums will look vastly different.
+
+A flute produces a very "pure" tone that closely resembles a perfect sine wave. Therefore, its power spectrum will have almost all of its energy concentrated in a single large peak at the fundamental frequency, with very little energy distributed across higher harmonics.
+
+A trumpet, conversely, has a bright, "brassy" timbre. This rich sound is created mathematically by the presence of many higher overtones. The trumpet's power spectrum will exhibit a peak at the fundamental frequency, but it will \textbf{have far more harmonics} than the flute. The energy distribution of the trumpet will be spread across multiple distinct harmonic frequency peaks (integer multiples of the fundamental), whereas the flute's energy remains isolated mostly to the fundamental.
+
+% ----------------------------------------------------------------------
+% PROBLEM 4
+% ----------------------------------------------------------------------
+\section*{Problem 4: Moving Average Filters}
+
+\textbf{Prompt:} Examine the plots showing a raw signal and a smoothed signal using a moving average. Based on what you see, what do you expect to show up in a power spectrum for each signal? Explain what differences will arise.
+
+\textbf{Analysis:}
+\begin{itemize}
+\item \textbf{Top Plot (Raw Signal):} Visually, this signal consists of a slow, low-frequency oscillation combined with jagged, high-frequency noise oscillating rapidly on top of it.
+\item \textbf{Bottom Plot (Smoothed Signal):} The moving average has smoothed out the jaggedness, leaving primarily the slow, low-frequency oscillation intact.
+\end{itemize}
+
+\textbf{Expectation for the Power Spectrum:}
+\begin{itemize}
+\item \textbf{Top Plot's Power Spectrum:} Will contain two distinct features. There will be a large, sharp peak at a very low frequency representing the main slow oscillation. There will also be a secondary peak (or a broad band of energy) located at a much higher frequency representing the jagged noise.
+\item \textbf{Bottom Plot's Power Spectrum:} Applying a moving average mathematically acts as a \textbf{low-pass filter}. Therefore, the power spectrum for the smoothed plot will still clearly show the large energy peak at the low frequency, but the high-frequency energy will be vastly reduced or completely absent.
+\end{itemize}
+
+\textbf{Conclusion:} The primary difference between the two power spectrums is that the high-frequency energy content present in the raw data will be heavily attenuated (damped out) in the smoothed data's spectrum.
+
+\end{document}
