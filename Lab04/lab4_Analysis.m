@@ -4,12 +4,17 @@
 % Date: 03/06/2026
 
 %% 1. Define file to load (update this for each of your 8 files)
-filename = 'Sine_7Hz_5.0Vpp_0.0Voffset_raw.mat'; 
+filename = 'Square_25Hz_0.3Vpp_0.2Voffset_raw.mat'; 
 load(filename); % This loads your saved 't' and 'v' arrays
 
+% Convert duration array to double (seconds) to prevent xlim errors
+if exist('t', 'var') && isduration(t)
+    t = seconds(t);
+end
+
 % Parameters (Update these to match the loaded file)
-wave_type = 'Sine';
-freq = 7; 
+wave_type = 'Square';
+freq = 25; 
 fs = 2000; % Sampling frequency used during collection
 
 %% 2. Calculations

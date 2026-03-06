@@ -1,0 +1,40 @@
+--- Analysis for Ramp_100_25Hz_0.3Vpp_0.2Voffset_raw.mat ---
+Mean Voltage: 0.2005 V
+RMS Voltage: 0.2184 V
+DC Offset: 0.2005 V
+
+--- Analysis for Ramp_100_7Hz_5.0Vpp_0.0Voffset_raw.mat ---
+Mean Voltage: 0.0040 V
+RMS Voltage: 1.4470 V
+DC Offset: 0.0040 V
+
+--- Analysis for Ramp_50_25Hz_0.3Vpp_0.2Voffset_raw.mat ---
+Mean Voltage: 0.2014 V
+RMS Voltage: 0.2193 V
+DC Offset: 0.2014 V
+
+--- Analysis for Ramp_50_7Hz_5.0Vpp_0.0Voffset_raw.mat ---
+Mean Voltage: 0.0040 V
+RMS Voltage: 1.4471 V
+DC Offset: 0.0040 V
+
+--- Analysis for Sine_25Hz_0.3Vpp_0.2Voffset_raw.mat ---
+Mean Voltage: 0.2014 V
+RMS Voltage: 0.2277 V
+DC Offset: 0.2014 V
+
+--- Analysis for Sine_7Hz_5.0Vpp_0.0Voffset_raw.mat ---
+Mean Voltage: 0.0042 V
+RMS Voltage: 1.7722 V
+DC Offset: 0.0042 V
+
+--- Analysis for Square_25Hz_0.3Vpp_0.2Voffset_raw.mat ---
+Mean Voltage: 0.2014 V
+RMS Voltage: 0.2513 V
+DC Offset: 0.2014 V
+
+--- Analysis for Square_7Hz_5.0Vpp_0.0Voffset_raw.mat ---
+Mean Voltage: 0.0045 V
+RMS Voltage: 2.5065 V
+DC Offset: 0.0045 V
+
