@@ -3,9 +3,9 @@
 % Author: Sean Balbale
 % Date: 03/06/2026
 
-%% 1. Define file to load (update this for each of your 8 files)
+%% 1. Define file to load
 filename = 'Square_25Hz_0.3Vpp_0.2Voffset_raw.mat'; 
-load(filename); % This loads your saved 't' and 'v' arrays
+load(filename); % This loads saved 't' and 'v' arrays
 
 % Convert duration array to double (seconds) to prevent xlim errors
 if exist('t', 'var') && isduration(t)
@@ -45,7 +45,7 @@ set(gca, 'FontSize', 12); % Ensure text is large enough
 subplot(1, 2, 2);
 [pxx, f_out] = pwelch(v, [], [], [], fs); 
 
-% Note: Change 'semilogy' to 'plot' if you decide a linear y-axis looks better for your analysis
+% Note: Change 'semilogy' to 'plot' a linear y-axis looks better for analysis
 semilogy(f_out, pxx, 'LineWidth', 2); 
 xlim([0, freq * 10]); % x-axis limited to 10 times higher than the wave frequency
 xlabel('Frequency (Hz)', 'FontWeight', 'bold');

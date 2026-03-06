@@ -15,8 +15,6 @@ offset = 0;         % DC Offset in Volts (0 or 0.2)
 % ---------------------------------
 
 %% 2. Initialize DAQ
-% Assuming the DAQ is 'Dev1' and you are plugged into 'ai0'. 
-% Verify this in NI Max if you get an error.
 dq = daq("ni");
 addinput(dq, "Dev1", "ai0", "Voltage");
 dq.Rate = fs;
@@ -30,7 +28,7 @@ t = data.Time;
 v = data.Dev1_ai0;
 
 %% 4. Save Raw Data
-% This automatically generates a descriptive filename so you don't overwrite previous runs
+% This automatically generates a descriptive filename
 filename = sprintf('%s_%dHz_%.1fVpp_%.1fVoffset_raw.mat', wave_type, freq, vpp, offset);
 save(filename, 't', 'v');
 
