@@ -1,0 +1,147 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 5}
+\author{Sean Balbale}
+\date{March 10, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Pre-Lab 5}
+
+    \LARGE
+    Digital Signals and Data Acquisition
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} March 13, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% PROBLEM 1
+% ----------------------------------------------------------------------
+\section*{Problem 1: Quantization Error and Signal-to-Noise Ratio}
+
+\textbf{Prompt:} The NI-6321 DAQ that is used in lab has a maximum measurable voltage range of $\pm10$ volts and has 16 bits of resolution. What is the signal-to-noise ratio, and the quantization error of our system?
+
+\textbf{1. Quantization Error:}
+
+The quantization step size ($Q$) defines the smallest measurable voltage change in an analog-to-digital converter (ADC). It is calculated using the Full-Scale Range ($E_{FSR}$) and the bit resolution ($M$):
+\begin{itemize}
+  \item $E_{FSR} = V_{max} - V_{min} = 10 \text{ V} - (-10 \text{ V}) = 20 \text{ V}$
+  \item $M = 16 \text{ bits}$
+  \item Number of discrete states $= 2^{16} = 65,536$
+\end{itemize}
+
+\[ Q = \frac{E_{FSR}}{2^M} = \frac{20 \text{ V}}{65,536} = 0.000305176 \text{ V} = 0.305 \text{ \si{\milli\volt}} \]
+
+The \textbf{maximum quantization error} ($e_Q$) is half of the step size ($\pm Q/2$), because the ADC will round any analog value to the nearest discrete step:
+
+\[ e_Q = \pm \frac{0.305 \text{ \si{\milli\volt}}}{2} = \mathbf{\pm 0.1526 \text{ \si{\milli\volt}}} \]
+
+\textbf{2. Signal-to-Noise Ratio (SNR):}
+
+For an ideal ADC, the theoretical maximum Signal-to-Noise Ratio (dynamic range) is determined entirely by its bit resolution. It is calculated using the following formula:
+
+\[ SNR = 20 \log_{10}(2^M) \]
+\[ SNR = 20 \log_{10}(65,536) = \mathbf{96.32 \text{ dB}} \]
+
+% ----------------------------------------------------------------------
+% PROBLEM 2
+% ----------------------------------------------------------------------
+\section*{Problem 2: Relative Quantization Error and Signal Conditioning}
+
+\textbf{Prompt:} If you are using the DAQ we have in the lab to measure a sinusoidal signal that has a maximum peak-to-peak value of 20 mV, what is the relative quantization error? What about a signal that is 5V peak-to-peak? Repeat this with a DAQ that has a $\pm10$V range, but only has a 12 bit resolution. Express these as a percentage of the signal, then discuss how your result motivates the need to amplify small signals when using a digital acquisition system.
+
+\textbf{Formula:}
+To find the relative quantization error as a percentage of the signal, divide the quantization step size ($Q$) by the peak-to-peak signal voltage ($V_{p-p}$):
+\[ \text{Relative Error (\%)} = \left( \frac{Q}{V_{p-p}} \right) \times 100\% \]
+
+\textbf{1. Calculations for the 16-bit DAQ ($Q_{16} = 0.305 \text{ \si{\milli\volt}}$):}
+\begin{itemize}
+  \item \textbf{For $V_{p-p} = 20 \text{ \si{\milli\volt}}$:} \\
+    \[ \text{Relative Error} = \left( \frac{0.305 \text{ \si{\milli\volt}}}{20 \text{ \si{\milli\volt}}} \right) \times 100\% = \mathbf{1.526\%} \]
+  \item \textbf{For $V_{p-p} = 5 \text{ \si{\volt}} \ (5000 \text{ \si{\milli\volt}})$:} \\
+    \[ \text{Relative Error} = \left( \frac{0.305 \text{ \si{\milli\volt}}}{5000 \text{ \si{\milli\volt}}} \right) \times 100\% = \mathbf{0.0061\%} \]
+\end{itemize}
+
+\textbf{2. Calculations for the 12-bit DAQ ($E_{FSR} = 20 \text{ \si{\volt}}$):}
+
+First, find the new quantization step size:
+\[ Q_{12} = \frac{20 \text{ \si{\volt}}}{2^{12}} = \frac{20 \text{ \si{\volt}}}{4096} = 4.883 \text{ \si{\milli\volt}} \]
+\begin{itemize}
+  \item \textbf{For $V_{p-p} = 20 \text{ \si{\milli\volt}}$:} \\
+    \[ \text{Relative Error} = \left( \frac{4.883 \text{ \si{\milli\volt}}}{20 \text{ \si{\milli\volt}}} \right) \times 100\% = \mathbf{24.415\%} \]
+  \item \textbf{For $V_{p-p} = 5 \text{ \si{\volt}} \ (5000 \text{ \si{\milli\volt}})$:} \\
+    \[ \text{Relative Error} = \left( \frac{4.883 \text{ \si{\milli\volt}}}{5000 \text{ \si{\milli\volt}}} \right) \times 100\% = \mathbf{0.0977\%} \]
+\end{itemize}
+
+\textbf{Discussion:}
+The results clearly show that when measuring a tiny signal (20 mV) using a large full-scale range ($\pm 10$ V), the discrete quantization steps represent a massive percentage of the signal itself. On the 12-bit DAQ, the error is nearly 25\%, meaning the captured digital waveform will look like jagged, blocky steps rather than a smooth sine wave, completely destroying signal fidelity.
+
+This strongly motivates the need for \textbf{signal conditioning (analog amplification)} \textit{before} the signal hits the ADC. By applying an analog gain to the 20 mV signal to boost it closer to the 5 V range, the signal spans far more of the DAQ's available discrete states, driving the relative quantization error down to negligible levels (e.g., 0.0061\%) and preserving the waveform's true shape.
+
+% ----------------------------------------------------------------------
+% PROBLEM 3
+% ----------------------------------------------------------------------
+\section*{Problem 3: Alias Frequencies}
+
+\textbf{Prompt:} Determine the alias frequency that results from the combination of sampling a sinusoidal wave at $f_1$ with a sample rate of $f_s$.
+
+\textbf{Method:}
+Aliasing occurs when the sample rate ($f_s$) is less than twice the signal frequency ($f_s < 2f_1$, violating the Nyquist theorem). The perceived alias frequency ($f_a$) is determined by folding the frequency around the Nyquist limit, modeled by the equation:
+\[ f_a = |f_1 - n \cdot f_s| \]
+where $n$ is the closest integer to the ratio $\frac{f_1}{f_s}$.
+
+\textbf{Calculations:}
+
+\textbf{a) $f_1 = 60 \text{ \si{\hertz}}$ and $f_s = 90 \text{ \si{\hertz}}$}
+\begin{itemize}
+\item $n = \text{round}(60 / 90) = \text{round}(0.667) = 1$
+\item $f_a = |60 - 1(90)| = |-30| = \mathbf{30 \text{ \si{\hertz}}}$
+\end{itemize}
+
+\textbf{b) $f_1 = 10 \text{ \si{\hertz}}$ and $f_s = 6 \text{ \si{\hertz}}$}
+\begin{itemize}
+\item $n = \text{round}(10 / 6) = \text{round}(1.667) = 2$
+\item $f_a = |10 - 2(6)| = |10 - 12| = \mathbf{2 \text{ \si{\hertz}}}$
+\end{itemize}
+
+\textbf{c) $f_1 = 1.2 \text{ \si{\kilo\hertz}}$ and $f_s = 2 \text{ \si{\kilo\hertz}}$}
+\begin{itemize}
+\item $n = \text{round}(1200 / 2000) = \text{round}(0.6) = 1$
+\item $f_a = |1200 - 1(2000)| = |-800| = \mathbf{800 \text{ \si{\hertz}}}$
+\end{itemize}
+
+\textbf{d) $f_1 = 16 \text{ \si{\hertz}}$ and $f_s = 8 \text{ \si{\hertz}}$}
+\begin{itemize}
+\item $n = \text{round}(16 / 8) = 2$
+\item $f_a = |16 - 2(8)| = |16 - 16| = \mathbf{0 \text{ \si{\hertz}}}$
+\end{itemize}
+
+\end{document}
