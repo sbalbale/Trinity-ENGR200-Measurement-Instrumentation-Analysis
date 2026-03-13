@@ -7,45 +7,45 @@ clear; clc; close all;
 
 %% 1. Define Files to Analyze
 % --- Task 1: Sine Wave Frequency Sweeps (Select 4 across the range) ---
-files_to_analyze = {
-                    'Sine_500Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_600Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_700Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_800Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_900Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1000Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1100Hz_5.000Vpp_fs2000_raw.mat';
-                    'Sine_1200Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1300Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1400Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1500Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1600Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1700Hz_5.000Vpp_fs2000_raw.mat';
-                    'Sine_1800Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1900Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_2000Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_2100Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_2200Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_2300Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_2400Hz_5.000Vpp_fs2000_raw.mat';
-                    'Sine_2500Hz_5.000Vpp_fs2000_raw.mat'
-                    };
+% files_to_analyze = {
+%                     'Sine_500Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_600Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_700Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_800Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_900Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1000Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1100Hz_5.000Vpp_fs2000_raw.mat';
+%                     'Sine_1200Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1300Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1400Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1500Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1600Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1700Hz_5.000Vpp_fs2000_raw.mat';
+%                     'Sine_1800Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_1900Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_2000Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_2100Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_2200Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_2300Hz_5.000Vpp_fs2000_raw.mat';
+% % 'Sine_2400Hz_5.000Vpp_fs2000_raw.mat';
+%                     'Sine_2500Hz_5.000Vpp_fs2000_raw.mat'
+%                     };
 
 % --- Task 2: Small Amplitude Resolution Test ---
 % files_to_analyze = {
-%     'Sine_100Hz_0.050Vpp_fs10000_raw.mat';
-%     'Sine_100Hz_0.020Vpp_fs10000_raw.mat';
-%     'Sine_100Hz_0.010Vpp_fs10000_raw.mat';
-%     'Sine_100Hz_0.002Vpp_fs10000_raw.mat'
+    % 'Sine_100Hz_0.050Vpp_fs10000_raw.mat';
+    % 'Sine_100Hz_0.020Vpp_fs10000_raw.mat';
+    % 'Sine_100Hz_0.010Vpp_fs10000_raw.mat';
+    % 'Sine_100Hz_0.002Vpp_fs10000_raw.mat'
 % };
 
 % --- Task 3: Sampling Rate Effects on Saw Wave ---
-% files_to_analyze = {
-%     'Saw_173Hz_5.000Vpp_fs500_raw.mat';
-%     'Saw_173Hz_5.000Vpp_fs1000_raw.mat';
-%     'Saw_173Hz_5.000Vpp_fs2000_raw.mat';
-%     'Saw_173Hz_5.000Vpp_fs5000_raw.mat'
-% };
+files_to_analyze = {
+    'Saw_173Hz_5.000Vpp_fs500_raw.mat';
+    'Saw_173Hz_5.000Vpp_fs1000_raw.mat';
+    'Saw_173Hz_5.000Vpp_fs2000_raw.mat';
+    'Saw_173Hz_5.000Vpp_fs5000_raw.mat'
+};
 
 %% 2. Loop Through and Analyze Each File
 for i = 1:length(files_to_analyze)
@@ -62,11 +62,17 @@ for i = 1:length(files_to_analyze)
 
     % Extract parameters from the filename for plot titles and calculations
     % Assumes format: WaveType_FreqHz_VppVpp_fs[fs]_raw.mat
-    parsed = textscan(base_filename, '%[a-zA-Z]_%dHz_%fVpp_fs%d_raw.mat');
-    wave_type = parsed{1}{1};
-    freq = parsed{2};
-    vpp = parsed{3};
-    fs = parsed{4};
+    tokens = regexp(base_filename, '([a-zA-Z]+)_(\d+)Hz_([\d.]+)Vpp_fs(\d+)_raw\.mat', 'tokens');
+    
+    if isempty(tokens)
+        warning('Could not parse filename: %s', base_filename);
+        continue;
+    end
+    
+    wave_type = tokens{1}{1};
+    freq = str2double(tokens{1}{2});
+    vpp = str2double(tokens{1}{3});
+    fs = str2double(tokens{1}{4});
 
     % Convert duration array to double (seconds) to prevent xlim errors
     if exist('t', 'var') && isduration(t)
