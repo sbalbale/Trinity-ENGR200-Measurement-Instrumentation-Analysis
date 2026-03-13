@@ -16,19 +16,19 @@ fileList = dir(fullfile(figuresDir, '*.fig'));
 for i = 1:length(fileList)
     % Get the full path to the figure file
     figFile = fullfile(figuresDir, fileList(i).name);
-    
+
     % Open the figure
     % 'invisible' prevents the figure from popping up on the screen
     h = openfig(figFile, 'invisible');
-    
+
     % Construct the output filename
     [~, name, ~] = fileparts(fileList(i).name);
     outputFilename = fullfile(outputDir, [name '.png']);
-    
+
     % Save the figure as a PNG
     fprintf('Saving %s to %s...\n', fileList(i).name, outputFilename);
     saveas(h, outputFilename, 'png');
-    
+
     % Close the figure
     close(h);
 end

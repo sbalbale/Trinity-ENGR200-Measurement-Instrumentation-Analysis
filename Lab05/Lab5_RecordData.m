@@ -7,28 +7,28 @@
 % --- UPDATE THESE PARAMETERS FOR EACH SPECIFIC RUN ---
 
 % --- Task 1 Parameters ---
-fs = 2000;          
-duration = 4;      
-wave_type = 'Sine'; 
-freq = 500;         % Change from 500 to 2500 in 100 Hz steps
-vpp = 5;            
-offset = 0;         
+fs = 2000;
+duration = 4;
+wave_type = 'Sine';
+freq = 500; % Change from 500 to 2500 in 100 Hz steps
+vpp = 5;
+offset = 0;
 
 % --- Task 2 Parameters ---
-% fs = 10000;          
-% duration = 2;      
-% wave_type = 'Sine'; 
-% freq = 100;         
+% fs = 10000;
+% duration = 2;
+% wave_type = 'Sine';
+% freq = 100;
 % vpp = 0.05;         % Change to 0.05, 0.02, 0.01, 0.002 (50mV, 20mV, 10mV, 2mV)
-% offset = 0;   
+% offset = 0;
 
 % --- Task 3 Parameters ---
 % fs = 500;           % Change to 500, 1000, 2000, 5000
-% duration = 2;      
+% duration = 2;
 % wave_type = 'Saw';  % Function generator uses a ramp with 0% symmetry
-% freq = 173;         
-% vpp = 5;            
-% offset = 0;         
+% freq = 173;
+% vpp = 5;
+% offset = 0;
 
 %% 2. Initialize DAQ
 dq = daq("ni");
