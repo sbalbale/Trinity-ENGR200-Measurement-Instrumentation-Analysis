@@ -13,9 +13,9 @@ files_to_analyze = {
 % 'Sine_700Hz_5.000Vpp_fs2000_raw.mat';
 % 'Sine_800Hz_5.000Vpp_fs2000_raw.mat';
 % 'Sine_900Hz_5.000Vpp_fs2000_raw.mat';
-% 'Sine_1000Hz_5.000Vpp_fs2000_raw.mat';
+                    'Sine_1000Hz_5.000Vpp_fs2000_raw.mat';
 % 'Sine_1100Hz_5.000Vpp_fs2000_raw.mat';
-                    'Sine_1200Hz_5.000Vpp_fs2000_raw.mat';
+% 'Sine_1200Hz_5.000Vpp_fs2000_raw.mat';
 % 'Sine_1300Hz_5.000Vpp_fs2000_raw.mat';
 % 'Sine_1400Hz_5.000Vpp_fs2000_raw.mat';
 % 'Sine_1500Hz_5.000Vpp_fs2000_raw.mat';
@@ -61,18 +61,25 @@ for i = 1:length(files_to_analyze)
     load(filename); % Loads 't' and 'v'
 
     % Extract parameters from the filename for plot titles and calculations
-    % Assumes format: WaveType_FreqHz_VppVpp_fs[fs]_raw.mat
+    % Assumes format: WaveType_[Freq]Hz_[Vpp]Vpp_fs[fs]_raw.mat
     tokens = regexp(base_filename, '([a-zA-Z]+)_(\d+)Hz_([\d.]+)Vpp_fs(\d+)_raw\.mat', 'tokens');
-    
+
     if isempty(tokens)
         warning('Could not parse filename: %s', base_filename);
         continue;
     end
-    
+
     wave_type = tokens{1}{1};
     freq = str2double(tokens{1}{2});
     vpp = str2double(tokens{1}{3});
     fs = str2double(tokens{1}{4});
+
+    % DEBUG: Print parsed values
+    fprintf('Parsing: %s\n', base_filename);
+    fprintf('  Wave Type: %s\n', wave_type);
+    fprintf('  Frequency: %d Hz\n', freq);
+    fprintf('  Vpp: %.3f V\n', vpp);
+    fprintf('  Sampling Rate: %d Hz\n', fs);
 
     % Convert duration array to double (seconds) to prevent xlim errors
     if exist('t', 'var') && isduration(t)
@@ -82,6 +89,15 @@ for i = 1:length(files_to_analyze)
     % Calculate Nyquist frequency
     nyquist_freq = fs / 2;
 
+    % Calculate apparent frequency (handling aliasing)
+    f_apparent = abs(freq - fs * round(freq / fs));
+
+    if f_apparent < 1e-6
+        f_plot = freq; % Fallback if aliased to DC
+    else
+        f_plot = f_apparent;
+    end
+
     %% 3. Create Side-by-Side Figure
     figure('Name', filename, 'Position', [100 + (i * 20), 100 + (i * 20), 1000, 400]);
 
@@ -89,13 +105,13 @@ for i = 1:length(files_to_analyze)
     subplot(1, 2, 1);
     plot(t, v, 'LineWidth', 1.5);
 
-    % Calculate time for 5 cycles of the input frequency
-    time_for_5_cycles = 5 / freq;
+    % Calculate time for 5 cycles of the apparent frequency
+    time_for_5_cycles = 5 / f_plot;
     xlim([0, time_for_5_cycles]);
 
     xlabel('Time (s)', 'FontWeight', 'bold');
     ylabel('Voltage (V)', 'FontWeight', 'bold');
-    title(sprintf('Time Domain: %s %d Hz (fs = %d Hz)', wave_type, freq, fs));
+    title(sprintf('Time Domain: %s %d Hz (Apparent: %d Hz)', wave_type, freq, round(f_plot)));
     grid on;
     set(gca, 'FontSize', 12);
 
