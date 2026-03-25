@@ -1,0 +1,145 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 6}
+\author{Sean Balbale}
+\date{March 27, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Pre-Lab 6}
+
+    \LARGE
+    Amplifier Uncertainty Analysis
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} March 27, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+While ideal operational amplifiers assume infinite input impedance and zero output impedance, the physical gain of the circuit is entirely constrained by the tolerances of the external resistor network. To determine the reliability of our amplifier stages, we evaluate the standard propagation of uncertainty—using the Root Sum Square (RSS) method—to account for the variance in the discrete resistor values.
+
+% ----------------------------------------------------------------------
+% PROBLEM 1
+% ----------------------------------------------------------------------
+\section*{Problem 1: Non-Inverting Amplifier Uncertainty}
+
+\textbf{Objective:} Derive an expression for the uncertainty in gain $G$ for a non-inverting amplifier and calculate the nominal gain and uncertainty given $R_1 = 900\,\Omega$, $R_2 = 100\,\Omega$, and $\delta R_1 = \delta R_2 = 10\,\Omega$.
+
+\textbf{Derivation:}
+The standard theoretical gain for a non-inverting amplifier (Equation 6.43) is defined by the feedback resistor ($R_1$) and the ground-tied resistor ($R_2$):
+
+\[ G = \frac{R_1 + R_2}{R_2} = 1 + \frac{R_1}{R_2} \]
+
+To find the functional relationship for the uncertainty $\delta G$, we apply the RSS method for uncorrelated errors:
+
+\[ \delta G = \sqrt{ \left( \frac{\partial G}{\partial R_1} \delta R_1 \right)^2 + \left( \frac{\partial G}{\partial R_2} \delta R_2 \right)^2 } \]
+
+We compute the partial derivatives of the gain function with respect to each resistor:
+
+\[ \frac{\partial G}{\partial R_1} = \frac{1}{R_2} \]
+\[ \frac{\partial G}{\partial R_2} = -\frac{R_1}{R_2^2} \]
+
+Substituting these partial derivatives back into the RSS equation yields our final expression for $\delta G = \text{fnc}(R_1, R_2, \delta R_1, \delta R_2)$:
+
+\[ \delta G = \sqrt{ \left( \frac{\delta R_1}{R_2} \right)^2 + \left( -\frac{R_1 \delta R_2}{R_2^2} \right)^2 } \]
+
+\textbf{Calculation:}
+We instantiate the function with the provided circuit parameters:
+\begin{itemize}
+  \item $R_1 = \SI{900}{\ohm}$
+  \item $R_2 = \SI{100}{\ohm}$
+  \item $\delta R_1 = \SI{10}{\ohm}$
+  \item $\delta R_2 = \SI{10}{\ohm}$
+\end{itemize}
+
+First, calculate the nominal gain $G$:
+\[ G = 1 + \frac{900}{100} = 10 \]
+
+Next, calculate the partial derivative terms:
+\[ \frac{\partial G}{\partial R_1} \delta R_1 = \left(\frac{1}{100}\right)(10) = 0.1 \]
+\[ \frac{\partial G}{\partial R_2} \delta R_2 = \left(-\frac{900}{100^2}\right)(10) = (-0.09)(10) = -0.9 \]
+
+Finally, compute the total uncertainty $\delta G$:
+\[ \delta G = \sqrt{ (0.1)^2 + (-0.9)^2 } = \sqrt{ 0.01 + 0.81 } = \sqrt{0.82} \approx 0.91 \]
+
+\textbf{Result:}
+The nominal gain and its associated uncertainty for the non-inverting amplifier is:
+\[ G = 10 \pm 0.91 \]
+
+% ----------------------------------------------------------------------
+% PROBLEM 2
+% ----------------------------------------------------------------------
+\section*{Problem 2: Inverting Amplifier Uncertainty}
+
+\textbf{Objective:} Repeat the uncertainty derivation for an inverting amplifier (Equation 6.44) and evaluate it for $R_1 = 100\,\Omega$, $R_2 = 1000\,\Omega$, and $\delta R_1 = \delta R_2 = 10\,\Omega$. Compare the uncertainty values between the two topologies.
+
+\textbf{Derivation:}
+For standard inverting topologies, the output signal is $180^\circ$ out of phase with the input. The gain is dictated by the ratio of the feedback resistor ($R_2$) to the input resistor ($R_1$):
+
+\[ G = -\frac{R_2}{R_1} \]
+
+We apply the RSS method to map the propagation of error:
+
+\[ \delta G = \sqrt{ \left( \frac{\partial G}{\partial R_1} \delta R_1 \right)^2 + \left( \frac{\partial G}{\partial R_2} \delta R_2 \right)^2 } \]
+
+We calculate the partial derivatives:
+
+\[ \frac{\partial G}{\partial R_1} = \frac{R_2}{R_1^2} \]
+\[ \frac{\partial G}{\partial R_2} = -\frac{1}{R_1} \]
+
+This gives us the functional relationship for the inverting amplifier's uncertainty:
+
+\[ \delta G = \sqrt{ \left( \frac{R_2 \delta R_1}{R_1^2} \right)^2 + \left( -\frac{\delta R_2}{R_1} \right)^2 } \]
+
+\textbf{Calculation:}
+We apply the parameters specified for the inverting circuit:
+\begin{itemize}
+  \item $R_1 = \SI{100}{\ohm}$
+  \item $R_2 = \SI{1000}{\ohm}$
+  \item $\delta R_1 = \SI{10}{\ohm}$
+  \item $\delta R_2 = \SI{10}{\ohm}$
+\end{itemize}
+
+First, determine the nominal gain $G$:
+\[ G = -\frac{1000}{100} = -10 \]
+
+Next, calculate the partial derivative components:
+\[ \frac{\partial G}{\partial R_1} \delta R_1 = \left(\frac{1000}{100^2}\right)(10) = \left(\frac{1000}{10000}\right)(10) = (0.1)(10) = 1.0 \]
+\[ \frac{\partial G}{\partial R_2} \delta R_2 = \left(-\frac{1}{100}\right)(10) = -0.1 \]
+
+Compute the total uncertainty $\delta G$:
+\[ \delta G = \sqrt{ (1.0)^2 + (-0.1)^2 } = \sqrt{ 1.0 + 0.01 } = \sqrt{1.01} \approx 1.01 \]
+
+\textbf{Result:}
+The nominal gain and its associated uncertainty for the inverting amplifier is:
+\[ G = -10 \pm 1.01 \]
+
+\textbf{Comparison:}
+While both amplifier topologies yield a nominal gain magnitude of 10, the inverting stage exhibits a measurably higher absolute uncertainty ($\delta G \approx 1.01$ vs. $0.91$). This discrepancy is a direct result of the circuit architecture; the inverting gain equation is fundamentally more sensitive to the fractional tolerance of the input resistor ($R_1$) when it operates as the smaller of the two components.
+
+\end{document}
