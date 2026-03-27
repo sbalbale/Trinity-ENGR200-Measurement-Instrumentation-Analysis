@@ -8,9 +8,12 @@ clear; clc; close all;
 
 %% 1. Define Resistor Values for Theoretical Calculations
 % Input measured or nominal resistor values here (in Ohms)
-R1 = 1000; % Must be >= 1k Ohm
-R2_Task1 = 1000;
-R2_Task2 = 10000;
+% R1 = 1000; % Must be >= 1k Ohm
+% R2_Task1 = 1000;
+% R2_Task2 = 10000;
+R1 = 979; % Must be >= 1k Ohm
+R2_Task1 = 979;
+R2_Task2 = 9850;
 tolerance = 0.05; % 5 % tolerance
 
 %% 2. Define Files to Analyze

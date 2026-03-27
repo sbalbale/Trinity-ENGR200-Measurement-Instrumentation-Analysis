@@ -1,0 +1,45 @@
+Lab 6 Batch Analysis Results
+============================
+
+--- Analysis for Task1 Gain1 ---
+File: Sine_200Hz_10.0Vpp_fs10000_Task1_Gain1_raw.mat
+Input RMS: 3.367 V
+Output RMS: 3.358 V
+Measured Gain (Magnitude): 0.997
+
+--- Analysis for Task2 Gain10 Large ---
+File: Sine_200Hz_10.0Vpp_fs10000_Task2_Gain10_Large_raw.mat
+Input RMS: 3.466 V
+Output RMS: 10.246 V
+Measured Gain (Magnitude): 2.956
+
+--- Analysis for Task3 Gain10 Small ---
+File: Sine_200Hz_0.5Vpp_fs10000_Task3_Gain10_Small_raw.mat
+Input RMS: 0.168 V
+Output RMS: 1.688 V
+Measured Gain (Magnitude): 10.024
+
+--- Analysis for Task4 Supply 3pm ---
+File: Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_3pm_raw.mat
+Input RMS: 0.168 V
+Output RMS: 1.690 V
+Measured Gain (Magnitude): 10.033
+
+--- Analysis for Task4 Supply 1pm ---
+File: Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_1pm_raw.mat
+Input RMS: 0.168 V
+Output RMS: 1.690 V
+Measured Gain (Magnitude): 10.035
+
+--- Analysis for Task4 Supply 11am ---
+File: Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_11am_raw.mat
+Input RMS: 0.168 V
+Output RMS: 1.690 V
+Measured Gain (Magnitude): 10.036
+
+--- Analysis for Task4 Supply 9am ---
+File: Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_9am_raw.mat
+Input RMS: 0.176 V
+Output RMS: 0.479 V
+Measured Gain (Magnitude): 2.731
+

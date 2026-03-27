@@ -28,17 +28,22 @@ for i = 1:length(fileList)
     data = load(matFilePath);
 
     % Check for 't' and 'v' variables
-    if isfield(data, 't') && isfield(data, 'v')
+    if isfield(data, 't') && isfield(data, 'v_in') && isfield(data, 'v_out')
         t = data.t;
-        v = data.v;
+        v_in = data.v_in;
+        v_out = data.v_out;
 
         % Ensure 't' and 'v' are column vectors
         if isrow(t)
             t = t';
         end
 
-        if isrow(v)
-            v = v';
+        if isrow(v_in)
+            v_in = v_in';
+        end
+
+        if isrow(v_out)
+            v_out = v_out';
         end
 
         % Convert duration objects to seconds if necessary
@@ -52,13 +57,13 @@ for i = 1:length(fileList)
         end
 
         % Create a table with appropriate headers
-        T = table(t_sec, v, 'VariableNames', {'Time_s', 'Voltage_V'});
+        T = table(t_sec, v_in, v_out, 'VariableNames', {'Time_s', 'Input_Voltage_V', 'Output_Voltage_V'});
 
         % Write the table to a CSV file
         writetable(T, csvFilePath);
         fprintf('  Saved to %s\n', csvFilename);
     else
-        fprintf('  Skipping %s: Missing ''t'' or ''v'' variables.\n', matFilename);
+        fprintf('  Skipping %s: Missing ''t'', ''v_in'', or ''v_out'' variables.\n', matFilename);
     end
 
 end
