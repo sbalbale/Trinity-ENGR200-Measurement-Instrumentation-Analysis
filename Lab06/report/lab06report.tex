@@ -1,0 +1,206 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\pgfplotsset{compat=1.18}
+
+% Code listing style configuration
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{\textbf{ENGR 200: Lab 6}\\
+Amplification and Conditioning of Signals}
+\author{Sean Balbale}
+\date{March 27, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 6}
+
+    \LARGE
+    Amplification and Conditioning of Signals
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} Engineering 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} March 27, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ---------------------------------------------------------
+% PART 1: UNITY GAIN
+% ---------------------------------------------------------
+\section*{Part 1: Unity Gain Inverting Amplifier}
+
+We configured the TL072 operational amplifier as a unity gain inverting amplifier using two identical \SI{1}{\kilo\ohm} resistors ($R_1 = R_2 = \SI{1}{\kilo\ohm}$). The input signal was a \SI{200}{\hertz} sine wave driven at \SI{10}{\volt} peak-to-peak.
+
+The signal analysis confirms the nominal operation of the circuit. The calculated input RMS voltage is \SI{3.367}{\volt}, and the output RMS voltage is \SI{3.358}{\volt}, yielding an experimental gain magnitude of $0.997$. This closely matches the theoretical gain magnitude of $1.0$.
+
+The time-domain plot illustrates an intact sinusoidal output $180^\circ$ out of phase with the input. In the frequency domain, the spectral content of both the input and amplified output signals cleanly isolates the \SI{200}{\hertz} fundamental frequency. The absence of significant harmonic noise indicates that the amplifier is operating linearly within its supply rail constraints.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_10.0Vpp_fs10000_Task1_Gain1.png}
+  \caption{Task 1: Time and frequency domain response for unity gain configuration.}
+\end{figure}
+
+% ---------------------------------------------------------
+% PART 2: HARDWARE LIMITATIONS (LARGE SIGNAL)
+% ---------------------------------------------------------
+\newpage
+\section*{Part 2: Inverting Amplifier (Gain $\approx$ 10, Large Signal)}
+
+To increase the gain, we replaced the feedback resistor ($R_2$) with a \SI{10}{\kilo\ohm} component, theoretically establishing a nominal gain magnitude of 10. The input remained a \SI{200}{\hertz}, \SI{10}{\volt} peak-to-peak sine wave.
+
+The resulting data indicates severe signal distortion. The input RMS voltage was measured at \SI{3.466}{\volt}, while the output RMS reached only \SI{10.246}{\volt}. The measured gain magnitude was $2.956$—far below the theoretical target of 10.
+
+While the theoretical output required a \SI{100}{\volt} peak-to-peak swing to maintain linearity, the DAQ and op-amp power supplies physically cap the output voltage. The time-domain plot reveals heavy rail-to-rail clipping, essentially transforming the sinusoidal input into a square wave. The frequency-domain spectral density confirms this phenomenon; the output signal exhibits prominent high-energy peaks at odd harmonics (e.g., \SI{600}{\hertz} and \SI{1000}{\hertz}), which are the standard mathematical signatures of square-wave saturation.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_10.0Vpp_fs10000_Task2_Gain10_Large.png}
+  \caption{Task 2: Time and frequency domain response illustrating heavy rail-to-rail clipping.}
+\end{figure}
+
+% ---------------------------------------------------------
+% PART 3: SMALL SIGNAL AMPLIFICATION
+% ---------------------------------------------------------
+\newpage
+\section*{Part 3: Inverting Amplifier (Gain $\approx$ 10, Small Signal)}
+
+To circumvent the clipping limitations observed in Task 2, we scaled the input signal down to \SI{0.5}{\volt} peak-to-peak while maintaining the $10\times$ gain architecture ($R_1 = \SI{1}{\kilo\ohm}$, $R_2 = \SI{10}{\kilo\ohm}$).
+
+\textbf{Theoretical Gain and Uncertainty} \\
+Given $5\%$ resistor tolerances, the nominal values are $R_1 = \SI{1000}{\ohm} \pm \SI{50}{\ohm}$ and $R_2 = \SI{10000}{\ohm} \pm \SI{500}{\ohm}$. Using the Root Sum Square (RSS) method to propagate uncertainty for the inverting amplifier topology:
+\[ \delta G = \sqrt{ \left( -\frac{R_2 \delta R_1}{R_1^2} \right)^2 + \left( \frac{\delta R_2}{R_1} \right)^2 } \]
+Substituting the circuit parameters:
+\[ \delta G = \sqrt{ \left( -\frac{10000 \times 50}{1000^2} \right)^2 + \left( \frac{500}{1000} \right)^2 } = \sqrt{ (-0.5)^2 + (0.5)^2 } = \sqrt{0.5} \approx 0.71 \]
+The theoretical gain is therefore $G = -10 \pm 0.71$.
+
+\textbf{RMS and Gain Analysis} \\
+The data extraction yields an input RMS of \SI{0.168}{\volt} and an output RMS of \SI{1.688}{\volt}, resulting in an experimental gain magnitude of $10.02$. This result falls precisely within the theoretical uncertainty band calculated above. Unlike Task 2, the expected \SI{5}{\volt} peak-to-peak output swing is well within the supply limits of the TL072, allowing the op-amp to operate linearly. The output spectral profile cleanly mirrors the input; the fundamental \SI{200}{\hertz} frequency dominates the PSD without the odd-harmonic distortion characteristic of clipped signals.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_0.5Vpp_fs10000_Task3_Gain10_Small.png}
+  \caption{Task 3: Linear amplification of a small signal input (Gain $\approx$ 10).}
+\end{figure}
+
+% ---------------------------------------------------------
+% PART 4: SUPPLY VOLTAGE LIMITATIONS
+% ---------------------------------------------------------
+\newpage
+\section*{Part 4: Supply Voltage Limitations}
+
+Maintaining the \SI{0.5}{\volt} peak-to-peak input signal and nominal $10\times$ gain architecture, we mapped the operational limits of the TL072 by manually reducing the supply voltage via the potentiometers. We recorded four states designated by knob positions: 3pm, 1pm, 11am, and 9am.
+
+Analysis of the raw input data reveals that the "0.5 Vpp" sine wave is bounded between roughly $+0.241\,\text{V}$ and $-0.236\,\text{V}$. Modulated by our $\approx 10\times$ inverting gain, the expected theoretical output bounds are $-2.42\,\text{V}$ and $+2.37\,\text{V}$.
+
+The empirical data directly matches these expectations across the first three potentiometer states. At the "3pm," "1pm," and "11am" configurations, the recorded output signals are virtually identical, cleanly hitting maximums of $\approx +2.36\,\text{V}$ and minimums of $\approx -2.42\,\text{V}$. This proves that throughout these three states, the TL072 still commands sufficient voltage headroom from the power rails to avoid clipping, operating perfectly within its linear region.
+
+It is only at the "9am" position that the supply voltage physically drops below the minimum threshold required to amplify the signal. At this point, the operational amplifier suffers extreme starvation; the output entirely collapses into a heavily distorted, negatively offset square wave constrained between $-0.29\,\text{V}$ and $-0.91\,\text{V}$. Reviewing the Texas Instruments TL072 datasheet, the op-amp specifies a recommended minimum operating voltage of $\pm \SI{2.25}{\volt}$ (\SI{4.5}{\volt} differential). The 9am state clearly breached this operational floor, vitiating the amplifier's functionality.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_3pm.png}
+    \caption{Supply at 3pm}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_1pm.png}
+    \caption{Supply at 1pm}
+  \end{subfigure}
+
+  \vspace{0.5cm}
+
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_11am.png}
+    \caption{Supply at 11am}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Sine_200Hz_0.5Vpp_fs10000_Task4_Supply_9am.png}
+    \caption{Supply at 9am}
+  \end{subfigure}
+  \caption{Task 4: Linear operation across the first three states, followed by total supply failure at 9am.}
+\end{figure}
+
+% ---------------------------------------------------------
+% REFERENCES
+% ---------------------------------------------------------
+\newpage
+\begin{thebibliography}{9}
+
+  \bibitem{labmanual}
+  R. Gao, ``Laboratory 6: Amplification and Conditioning of Signals,'' \textit{Engineering 200 - Measurement, Instrumentation \& Analysis}, Trinity College, Spring 2026.
+
+  \bibitem{tl072}
+  Texas Instruments, ``TL07xx Low-Noise FET-Input Operational Amplifiers,'' \textit{Datasheet SLOS080V}, revised April 2023. [Online]. Available: www.ti.com.
+
+\end{thebibliography}
+
+% ---------------------------------------------------------
+% APPENDIX
+% ---------------------------------------------------------
+\newpage
+\appendix
+\section*{Appendix: MATLAB Code}
+
+\subsection*{Lab6\_RecordData.m}
+\lstinputlisting[language=Matlab]{../Lab6_RecordData.m}
+
+\subsection*{Lab6\_Analysis.m}
+\lstinputlisting[language=Matlab]{../Lab6_Analysis.m}
+
+\end{document}
