@@ -6,7 +6,7 @@
 clear; clc; close all;
 
 %% 1. Define Resistor Values for Theoretical Calculations
-% Input your measured or nominal resistor values here (in Ohms)
+% Input measured or nominal resistor values here (in Ohms)
 R1 = 1000; % Must be >= 1k Ohm
 R2_Task1 = 1000;
 R2_Task2 = 10000;

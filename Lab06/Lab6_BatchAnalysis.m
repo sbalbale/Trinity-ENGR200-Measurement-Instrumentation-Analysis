@@ -1,13 +1,13 @@
 % File: Lab6_BatchAnalysis.m
 % Purpose: Batch load Lab 6 data, calculate RMS and gain, output to results.txt
-%          AND the command window, and visibly display all plots for examination.
+%          and the command window, and visibly display all plots for examination.
 % Author: Sean Balbale
 % Date: 03/27/2026
 
 clear; clc; close all;
 
 %% 1. Define Resistor Values for Theoretical Calculations
-% Input your measured or nominal resistor values here (in Ohms)
+% Input measured or nominal resistor values here (in Ohms)
 R1 = 1000; % Must be >= 1k Ohm
 R2_Task1 = 1000;
 R2_Task2 = 10000;
@@ -79,7 +79,6 @@ for i = 1:length(files_to_analyze)
     fprintf(fileID, 'Measured Gain (Magnitude): %.3f\n\n', empirical_gain);
 
     %% 5. Create Plots (Visible for Inspection)
-    % Removed 'Visible', 'off'. Added a slight offset so windows cascade.
     fig = figure('Name', filename, 'Position', [100 + i * 20, 100 + i * 20, 1400, 450]);
 
     % Subplot A: Time Domain (Limit to 4 cycles)
@@ -130,7 +129,7 @@ for i = 1:length(files_to_analyze)
     % Strip the trailing '_raw.mat' for the image name
     clean_name = base_filename(1:end - 8);
 
-    % Still save copies to the folder so you have them for the report
+    % Still save copies to the folder
     savefig(fig, fullfile(figDir, [clean_name, '.fig']));
     saveas(fig, fullfile(figDir, [clean_name, '.png']));
 
