@@ -1,0 +1,103 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 7}
+\author{Sean Balbale}
+\date{April 3, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Pre-Lab 7}
+
+    \LARGE
+    System Response: Magnitude Ratio and Phase Shift
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} April 3, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% PROBLEM 1
+% ----------------------------------------------------------------------
+\section*{Problem 1: Magnitude Ratio in Decibels}
+
+\textbf{Objective:} Calculate the magnitude ratio $M(\omega)$ in decibels (dB) for four distinct input-output system responses, and evaluate the frequency dependence of the inverting amplifier architecture from Lab 6.
+
+\textbf{Methodology:}
+The magnitude ratio evaluates the scaling of a system's output amplitude ($A_{out}$) relative to its input amplitude ($A_{in}$). In standard engineering practice, the magnitude ratio for voltage or signal amplitude is converted to decibels using the following functional relationship:
+\[ M(\omega)_{\text{dB}} = 20 \log_{10} \left( \frac{A_{out}}{A_{in}} \right) \]
+
+\textbf{Calculations:}
+
+\textbf{a)} Input: $4\sin(2\pi t)$, Output: $4\sin(2\pi t)$
+\[ M(\omega)_{\text{dB}} = 20 \log_{10} \left( \frac{4}{4} \right) = 20 \log_{10}(1) = \mathbf{0} \text{ \textbf{dB}} \]
+
+\textbf{b)} Input: $4\sin(10\pi t)$, Output: $2.82\sin(10\pi t)$
+\[ M(\omega)_{\text{dB}} = 20 \log_{10} \left( \frac{2.82}{4} \right) = 20 \log_{10}(0.705) \approx \mathbf{-3.04} \text{ \textbf{dB}} \]
+
+\textbf{c)} Input: $4\sin(100\pi t)$, Output: $0.4\sin(100\pi t)$
+\[ M(\omega)_{\text{dB}} = 20 \log_{10} \left( \frac{0.4}{4} \right) = 20 \log_{10}(0.1) = \mathbf{-20.0} \text{ \textbf{dB}} \]
+
+\textbf{d)} Input: $4\sin(1000\pi t)$, Output: $0.04\sin(1000\pi t)$
+\[ M(\omega)_{\text{dB}} = 20 \log_{10} \left( \frac{0.04}{4} \right) = 20 \log_{10}(0.01) = \mathbf{-40.0} \text{ \textbf{dB}} \]
+
+\textbf{e) Frequency Dependence of the Lab 6 Inverting Amplifier:}
+While the ideal theoretical inverting amplifier—governed strictly by the algebraic relationship $G = -R_2/R_1$—dictates a magnitude ratio that is entirely independent of frequency, physical systems do not exhibit infinite bandwidth. The TL072 operational amplifier utilized in Lab 6 is constrained by a finite gain-bandwidth product (GBWP). Therefore, the magnitude ratio will remain constant across low and intermediate input frequencies, but it will inevitably attenuate (roll-off) as the input frequency scales up and approaches the physical bandwidth limit of the op-amp hardware.
+
+% ----------------------------------------------------------------------
+% PROBLEM 2
+% ----------------------------------------------------------------------
+\section*{Problem 2: Phase Shift Calculation}
+
+\textbf{Objective:} Calculate the phase shift $\phi(\omega)$ in degrees between the provided input and output waveforms, and establish the expected phase behavior for the Lab 6 inverting amplifier.
+
+\textbf{Methodology:}
+For sinusoidal functions of the form $y(t) = A \sin(\omega t + \phi)$, the phase shift $\phi_{shift}$ introduced by the system is the mathematical difference between the output phase angle ($\phi_{out}$) and the input phase angle ($\phi_{in}$). We calculate this difference in radians and apply a conversion factor ($180/\pi$) to extract the shift in degrees:
+\[ \phi_{shift} = \left( \phi_{out} - \phi_{in} \right) \times \frac{180}{\pi} \]
+
+\textbf{Calculations:}
+
+\textbf{a)} Input: $4\sin(2\pi t + 2)$, Output: $4\sin(2\pi t + 2)$
+\[ \phi_{shift} = (2 - 2) \times \frac{180}{\pi} = \mathbf{0^\circ} \]
+
+\textbf{b)} Input: $4\sin(10\pi t + 1)$, Output: $2.82\sin(10\pi t + 0.215)$
+\[ \phi_{shift} = (0.215 - 1) = -0.785 \text{ rad} \]
+\[ -0.785 \times \frac{180}{\pi} \approx \mathbf{-44.98^\circ} \]
+
+\textbf{c)} Input: $4\sin(100\pi t + 3)$, Output: $0.4\sin(100\pi t + 1.52)$
+\[ \phi_{shift} = (1.52 - 3) = -1.48 \text{ rad} \]
+\[ -1.48 \times \frac{180}{\pi} \approx \mathbf{-84.80^\circ} \]
+
+\textbf{d)} Input: $4\sin(1000\pi t + 2)$, Output: $0.04\sin(1000\pi t + 0.430)$
+\[ \phi_{shift} = (0.430 - 2) = -1.57 \text{ rad} \]
+\[ -1.57 \times \frac{180}{\pi} \approx \mathbf{-89.95^\circ} \]
+
+\textbf{e) Expected Phase Shift for the Lab 6 Inverting Amplifier:}
+While frequency-dependent reactive components—specifically capacitors and inductors—induce changing phase shifts across a frequency spectrum, our Lab 6 inverting amplifier architecture relied exclusively on a discrete resistor network ($R_1, R_2$). Because ideal resistors do not introduce time delays or reactive phase shifts, the phase shift for this topology is strictly constant. Specifically, the amplifier physically outputs a signal $180^\circ$ (or $\pi$ radians) out of phase with the input. This constant $180^\circ$ shift is an inherent property of driving the inverting terminal, mapping directly to the negative algebraic sign in the governing gain equation ($G = -R_2/R_1$).
+
+\end{document}
