@@ -142,7 +142,7 @@ fig_bode = figure('Name', 'Empirical Bode Plot', 'Position', [100, 600, 800, 600
 subplot(2, 1, 1);
 % Use semilogx and distinct filled markers as requested
 semilogx(freqs_recorded, mag_dB, 'ks', 'MarkerFaceColor', 'b', 'MarkerSize', 6);
-ylim([0, 40]); % Span 0 to 40 dB per manual instructions
+ylim([0, 40]); % Span 0 to 40 dB
 xlabel('Frequency, f (Hz)', 'FontWeight', 'bold');
 ylabel('Magnitude (dB)', 'FontWeight', 'bold');
 title('Bode Plot');
