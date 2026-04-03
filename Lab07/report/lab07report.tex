@@ -1,0 +1,196 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% PGFPlots configuration
+\pgfplotsset{compat=1.18}
+\pgfplotsset{
+  standard/.style={
+    width=0.85\textwidth,
+    height=0.35\textwidth,
+    grid=both,
+    grid style={line width=.1pt, draw=gray!20},
+    major grid style={line width=.2pt,draw=gray!50},
+    xlabel={Time (ms)},
+    ylabel={Voltage (V)},
+    legend pos=north east,
+    legend style={font=\footnotesize},
+    tick align=outside,
+    tick pos=left,
+    scaled ticks=false
+  }
+}
+
+% Code listing style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{\textbf{Lab 7: Assessment \& Performance of Electrical Devices}}
+\author{Sean Balbale}
+\date{April 3, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 7}
+
+    \LARGE
+    Assessment \& Performance of Electrical Devices
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} Engineering 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} April 3, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+\section{Introduction}
+The accurate characterization of physical phenomena relies not only on the fidelity of the sensors employed but on the robust engineering of the data acquisition (DAQ) and signal conditioning pipeline. Over the past four experimental modules, we have systematically evaluated the constraints of this pipeline. Lab 4 established the fundamentals of digital signal acquisition and spectral analysis via Fast Fourier Transforms (FFT). Lab 5 introduced the strict mathematical boundaries of digitization, demonstrating how undersampling vitiates high-frequency data (aliasing) and how finite 16-bit hardware resolution distorts low-amplitude signals through quantization error. To bridge this gap between low-voltage physical signals and DAQ resolution limits, Lab 6 explored analog signal conditioning using the TL072 operational amplifier, mapping the physical limits of amplifier clipping and supply rail saturation.
+
+Lab 7 serves to synthesize these concepts by evaluating the dynamic frequency response of our analog conditioning hardware. While ideal operational amplifiers are algebraically assumed to provide a constant, frequency-independent gain, physical integrated circuits are constrained by a finite Gain-Bandwidth Product (GBWP). The objective of this laboratory is to quantify the performance of the inverting amplifier architecture constructed in Lab 6 across a sweeping logarithmic range of input frequencies. By experimentally mapping the magnitude attenuation and phase shift introduced by the amplifier, we will construct an empirical Bode plot to comprehensively assess the system's linear time-invariant (LTI) dynamics.
+
+\section{Experimental Procedure}
+The experimental methodology centered on characterizing a TL072 operational amplifier configured as an inverting amplifier. The physical circuit utilized measured discrete components: an input resistor ($R_1 = \SI{994}{\ohm}$) and a feedback resistor ($R_2 = \SI{9843}{\ohm}$), targeting a nominal gain of roughly $9.90\,\text{V/V}$. To prevent the saturation and clipping behaviors observed in Lab 6, the op-amp was provisioned with nominal bipolar power rails ($\pm \SI{15}{\volt}$) and the input signal was constrained to a $\SI{1.0}{\volt}$ peak-to-peak sine wave with zero DC offset.
+
+To capture the frequency-dependent behavior of the system, the input signal was swept across 30 logarithmically spaced frequencies, ranging from $\SI{1.00}{\hertz}$ to $\SI{10000}{\hertz}$. At each discrete frequency point, the input and output waveforms were simultaneously recorded using an NI-6321 DAQ.
+
+A high-speed sampling rate of $f_s = \SI{100}{\kilo\hertz}$ was explicitly chosen for data collection. Drawing directly from the aliasing principles established in Lab 5, this rate was selected because it far exceeds the $\SI{20}{\kilo\hertz}$ Nyquist requirement for our maximum input frequency ($\SI{10}{\kilo\hertz}$). This oversampling approach ensured the high-frequency spectral content was recorded without aliasing degradation and provided sufficient temporal resolution to accurately calculate the phase shift delay ($\Delta t$) between the input and output waves. The acquired arrays were processed via MATLAB to extract the root-mean-square (RMS) voltages, magnitude ratio in decibels (dB), and phase shift in degrees.
+
+\section{Results}
+The system's behavior was captured both in the time domain and the frequency domain. Fig.~\ref{fig:timedomain} displays three distinct time-domain sweeps across the logarithmic frequency range, comparing the raw $\SI{1.0}{\volt}$ peak-to-peak input signal against the amplified output. Table~\ref{tab:bodedata} provides a numerical sample of the extracted frequency response data. As detailed in the full frequency sweep log (Appendix B: \texttt{results\_lab7.txt}), the passband gain remained consistent at roughly $\SI{19.10}{\decibel}$ until the $\SI{10}{\kilo\hertz}$ threshold.
+
+\begin{table}[H]
+  \centering
+  \caption{Sample Data from Logarithmic Frequency Sweep}
+  \label{tab:bodedata}
+  \begin{tabular}{lSSSS}
+    \toprule
+    \textbf{Frequency (\si{\hertz})} & \textbf{Input RMS (\si{\volt})} & \textbf{Output RMS (\si{\volt})} & \textbf{Magnitude (\si{\decibel})} & \textbf{Phase Shift ($^\circ$)} \\
+    \midrule
+    1.00     & 0.338 & 3.018 & 19.02 & -181.45 \\
+    32.90    & 0.338 & 3.047 & 19.10 & -180.15 \\
+    1082.64  & 0.338 & 3.043 & 19.09 & -179.29 \\
+    10000.00 & 0.338 & 3.036 & 19.07 & -144.00 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Fig.~\ref{fig:bodeplot} maps the extracted magnitude and phase data across the entire $\SI{1}{\hertz}$ to $\SI{10000}{\hertz}$ sweep to form the empirical Bode plot.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../pictures/Lab7_TimeDomain_Samples.png}
+  \caption{Time-domain waveforms at \SI{1.00}{\hertz}, \SI{85.32}{\hertz}, and \SI{1082.64}{\hertz}. The output securely mirrors the input sinusoidal geometry, amplified by a factor of approximately 10 and inverted.}
+  \label{fig:timedomain}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../pictures/Lab7_BodePlot.png}
+  \caption{Empirical Bode Plot for the TL072 Inverting Amplifier. The magnitude remains steady within the passband at $\approx \SI{19.1}{\decibel}$, while the phase shift rests near the theoretical $-180^\circ$ baseline before encountering high-frequency quantization error.}
+  \label{fig:bodeplot}
+\end{figure}
+
+\section{Discussion}
+
+\subsection{Bode Plot Validation and Bandwidth}
+The empirical Bode plot generated in Fig.~\ref{fig:bodeplot} makes complete physical sense for the analyzed circuit architecture. The magnitude ratio exhibits a flat passband, remaining constant at approximately $\SI{19.10}{\decibel}$ from $\SI{1}{\hertz}$ through to $\SI{10000}{\hertz}$. This stability proves the amplifier is operating purely within its mid-band frequencies without attenuation.
+
+While a complete Bode plot typically features a prominent $\SI{-20}{\decibel}\text{/decade}$ roll-off at high frequencies, our data truncates before reaching the system's cutoff frequency ($f_c$). The TL072 datasheet specifies a typical Gain-Bandwidth Product (GBWP) of $\SI{3}{\mega\hertz}$. For a closed-loop gain of $9.90$, the theoretical bandwidth limit is algebraically defined as $f_c = \text{GBWP} / G \approx \SI{303}{\kilo\hertz}$. Because our logarithmic sweep intentionally terminated at $\SI{10}{\kilo\hertz}$, the op-amp maintained more than enough bandwidth to process the signals without magnitude roll-off.
+
+\subsection{Gain Uncertainty and Decibel Propagation}
+To rigorously map the reliability of our Bode plot, we must propagate the $\pm 5\%$ tolerance of the physical resistor network into a decibel magnitude uncertainty ($\delta M_{\text{dB}}$). Using the measured values ($R_1 = \SI{994}{\ohm}$, $R_2 = \SI{9843}{\ohm}$), the theoretical nominal gain is $G = 9.90$. As derived in Lab 6 using the Root Sum Square (RSS) method, the linear gain uncertainty is:
+\[ \delta G = G \sqrt{\left(\frac{\delta R_1}{R_1}\right)^2 + \left(\frac{\delta R_2}{R_2}\right)^2} = 9.90 \sqrt{(0.05)^2 + (0.05)^2} \approx 0.70 \]
+To translate this linear uncertainty into a logarithmic Bode plot magnitude, we apply the derivative method for uncertainty propagation where $M_{\text{dB}} = 20 \log_{10}(G)$:
+\[ M_{\text{dB}} = 20 \log_{10} \left( \frac{9843}{994} \right) = 20 \log_{10} (9.90) \approx \mathbf{19.91 \text{ \textbf{dB}}} \]
+\[ \delta M_{\text{dB}} = \left| \frac{\partial M_{\text{dB}}}{\partial G} \right| \delta G = \left( \frac{20}{\ln(10) \cdot G} \right) \delta G = 8.686 \left( \frac{\delta G}{G} \right) \]
+\[ \delta M_{\text{dB}} = 8.686 \left( \frac{0.70}{9.90} \right) \approx \mathbf{0.61 \text{ \textbf{dB}}} \]
+
+The expected theoretical magnitude based on RSS is $19.91 \pm 0.61\,\text{dB}$. While our measured constant magnitude of $\SI{19.10}{\decibel}$ sits slightly below this statistical bound, it is fully encapsulated by the absolute worst-case tolerance limits. A $\pm 5\%$ variance in both $R_1$ and $R_2$ can result in a worst-case linear gain error of roughly $\pm 10\%$. Because $\SI{19.10}{\decibel}$ equates to a linear gain of $9.02\,\text{V/V}$, this $\approx 9\%$ drop falls directly within the physical tolerance capabilities of the discrete components. It is mathematically incorrect to attribute this discrepancy to DAQ loading impedances, as the NI-6321 possesses an input impedance of $>10\,\text{G}\Omega$, making any breadboard loading effects on a $10\,\text{k}\Omega$ circuit entirely negligible.
+
+\subsection{Alternative Topologies and Scaling}
+The system's frequency response is entirely dictated by the interplay between the chosen gain and the hardware topology:
+\begin{itemize}
+  \item \textbf{Increasing Gain to 20:} If the nominal gain were increased to 20, two distinct shifts would occur on the Bode plot. First, the passband magnitude would rise to approximately $\SI{26.0}{\decibel}$ ($20\log_{10}(20)$). Second, due to the fixed $\SI{3}{\mega\hertz}$ GBWP, the cutoff frequency would halve to $\SI{150}{\kilo\hertz}$, shifting the $\SI{-20}{\decibel}\text{/decade}$ roll-off earlier in the frequency domain.
+  \item \textbf{Non-Inverting Amplifier (Gain of 10):} If the circuit were reconfigured to a non-inverting topology at the same gain magnitude, the magnitude profile would remain identical ($\approx \SI{20}{\decibel}$). However, the phase plot would shift drastically—rather than resting at the $-180^\circ$ baseline, it would begin at $0^\circ$, reflecting the lack of signal inversion.
+\end{itemize}
+
+\subsection{High-Frequency Data Degradation}
+While the magnitude remained securely flat, we encountered a severe anomaly with the phase data as we approached the upper frequency range. At $\SI{10000}{\hertz}$, the phase recorded a shift of $-144^\circ$. Relative to the ideal $-180^\circ$ inverting baseline, this constitutes a $+36^\circ$ phase \textit{advance}. However, an op-amp behaves as a low-pass filter; any internal poles would strictly induce further phase \textit{lag} (pushing the phase toward $-270^\circ$). A phase advance in this circuit is physically impossible.
+
+Instead, this error is a direct digital sampling artifact. At $\SI{10}{\kilo\hertz}$, a $\SI{100}{\kilo\hertz}$ sampling rate captures exactly 10 discrete samples per cycle. This translates to a hard temporal quantization limit of $36^\circ$ per sample ($360^\circ / 10$). The recorded $-144^\circ$ shift is precisely one quantization step ($36^\circ$) off from the true $-180^\circ$ baseline. This conclusively proves that our DAQ's reduced temporal resolution introduced severe quantization timing errors when MATLAB attempted to extract peak-to-peak time delays ($\Delta t$).
+
+\section{Conclusion}
+This sequence of laboratories has demonstrated that accurate measurement engineering requires a holistic understanding of both the analog and digital domains. We established that digital systems are fundamentally constrained by sampling rates and quantization limits; to prevent aliasing and digital distortion, physical signals must be properly conditioned. Analog amplifiers bridge this gap, but as mapped in this report's Bode plot, they introduce their own strict physical constraints regarding bandwidth and phase margins. By systematically pairing a digital sampling architecture with a stable, linear analog gain stage operating safely below its GBWP cutoff, we successfully engineered a robust data acquisition pipeline capable of precise frequency-domain analysis. To mitigate the observed phase quantization at $\SI{10}{\kilo\hertz}$, future measurements should utilize a sampling rate of at least $\SI{1}{\mega\hertz}$. This would increase the cycles-per-sample resolution from 10 to 100, reducing the phase measurement uncertainty from $36^\circ$ to $3.6^\circ$ per sample.
+
+\section{References}
+\begin{thebibliography}{2}
+  \bibitem{labmanual}
+  R. Gao, ``Laboratory 7: Assessment \& Performance of Electrical Devices,'' \textit{Engineering 200 - Measurement, Instrumentation \& Analysis}, Trinity College, Spring 2026.
+
+  \bibitem{tl072}
+  Texas Instruments, ``TL07xx Low-Noise FET-Input Operational Amplifiers,'' \textit{Datasheet SLOS080V}, revised April 2023. [Online]. Available: www.ti.com.
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{MATLAB Code}
+The following scripts were utilized for data logging and batch analysis to generate the Bode plot parameters.
+
+\subsection{Lab7\_RecordData.m}
+\lstinputlisting[language=Matlab]{../Lab7_RecordData.m}
+
+\subsection{Lab7\_BatchAnalysis.m}
+\lstinputlisting[language=Matlab]{../Lab7_BatchAnalysis.m}
+
+\newpage
+\section{Full Frequency Sweep Data}
+The following log contains the complete numerical output extracted from the 30 logarithmically spaced trials.
+
+\subsection{results\_lab7.txt}
+\lstinputlisting{../results_lab7.txt}
+
+\end{document}

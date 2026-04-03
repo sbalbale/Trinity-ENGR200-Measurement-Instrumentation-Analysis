@@ -6,13 +6,7 @@
 
 clear; clc; close all;
 
-%% 1. Define Resistor Values for Theoretical Calculations
-% Input measured or nominal resistor values here (in Ohms)
-R1 = 1000; % Must be >= 1k Ohm
-R2_Task2 = 10000;
-tolerance = 0.05; % 5 % tolerance
-
-%% 2. Define Directories & Setup
+%% 1. Define Directories & Setup
 dataDir = 'data';
 figDir = 'figures';
 
@@ -38,7 +32,7 @@ freqs_recorded = zeros(numFiles, 1);
 mag_dB = zeros(numFiles, 1);
 phase_deg = zeros(numFiles, 1);
 
-%% 3. Process Each File for Bode Plot Data
+%% 2. Process Each File for Bode Plot Data
 for i = 1:numFiles
     base_filename = matFiles(i).name;
     filename = fullfile(dataDir, base_filename);
@@ -103,7 +97,7 @@ phase_deg = phase_deg(sortIdx);
 
 fprintf('Batch analysis complete! Extracted %d points.\n', numFiles);
 
-%% 4. Plot 3 Arbitrary Frequencies (Low, Mid, High)
+%% 3. Plot 3 Arbitrary Frequencies (Low, Mid, High)
 % Pick 3 indices: 1st point (lowest freq), middle point, and last point (highest freq)
 indices_to_plot = [1, floor(numFiles / 2), numFiles];
 
@@ -135,7 +129,7 @@ end
 savefig(fig_time, fullfile(figDir, 'Lab7_TimeDomain_Samples.fig'));
 saveas(fig_time, fullfile(figDir, 'Lab7_TimeDomain_Samples.png'));
 
-%% 5. Plot the Full Bode Plot
+%% 4. Plot the Full Bode Plot
 fig_bode = figure('Name', 'Empirical Bode Plot', 'Position', [100, 600, 800, 600]);
 
 % Magnitude Subplot
