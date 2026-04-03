@@ -100,4 +100,38 @@ For sinusoidal functions of the form $y(t) = A \sin(\omega t + \phi)$, the phase
 \textbf{e) Expected Phase Shift for the Lab 6 Inverting Amplifier:}
 While frequency-dependent reactive components—specifically capacitors and inductors—induce changing phase shifts across a frequency spectrum, our Lab 6 inverting amplifier architecture relied exclusively on a discrete resistor network ($R_1, R_2$). Because ideal resistors do not introduce time delays or reactive phase shifts, the phase shift for this topology is strictly constant. Specifically, the amplifier physically outputs a signal $180^\circ$ (or $\pi$ radians) out of phase with the input. This constant $180^\circ$ shift is an inherent property of driving the inverting terminal, mapping directly to the negative algebraic sign in the governing gain equation ($G = -R_2/R_1$).
 
+% ----------------------------------------------------------------------
+% PROBLEM 3
+% ----------------------------------------------------------------------
+\section*{Problem 3: Time Delay and Sampling Resolution}
+
+\textbf{Objective:} Determine the absolute time delay ($\Delta t$) associated with each system phase shift from Problem 2, and identify the minimum digital sampling frequency required to capture the smallest delay.
+
+\textbf{Part A: Time Delay Calculations} \\
+\textbf{Methodology:}
+The time delay represents the physical latency between the input signal and the system's output response. It is extracted by dividing the absolute phase shift (in radians) by the angular frequency ($\omega$) of the specific signal:
+\[ \Delta t = \frac{|\phi_{shift}|}{\omega} \]
+
+\textbf{Calculations:}
+\begin{itemize}
+\item \textbf{a)} $\omega = 2\pi$, $\phi_{shift} = 0 \text{ rad}$
+\[ \Delta t = \frac{0}{2\pi} = \mathbf{0 \text{ s}} \]
+
+\item \textbf{b)} $\omega = 10\pi$, $\phi_{shift} = -0.785 \text{ rad}$
+\[ \Delta t = \frac{0.785}{10\pi} \approx \mathbf{0.025 \text{ s}} \quad (25.0 \text{ ms}) \]
+
+\item \textbf{c)} $\omega = 100\pi$, $\phi_{shift} = -1.48 \text{ rad}$
+\[ \Delta t = \frac{1.48}{100\pi} \approx \mathbf{0.0047 \text{ s}} \quad (4.71 \text{ ms}) \]
+
+\item \textbf{d)} $\omega = 1000\pi$, $\phi_{shift} = -1.57 \text{ rad}$
+\[ \Delta t = \frac{1.57}{1000\pi} \approx \mathbf{0.0005 \text{ s}} \quad (0.50 \text{ ms}) \]
+\end{itemize}
+
+\textbf{Part B: Minimum Sampling Frequency} \\
+\textbf{Analysis:}
+The smallest time delay across the evaluated system states is $\Delta t = 0.0005\,\text{s}$ (from signal \textit{d}). To accurately resolve a temporal event of this specific duration using digital data acquisition, the sampling period ($T_s$) must be less than or equal to the time delay itself. If $T_s > \Delta t$, the hardware lacks the resolution to detect the temporal shift between the two signals.
+
+Therefore, the minimum sampling frequency $f_{s}$ required to bridge this resolution gap is the inverse of the minimum time delay:
+\[ f_{s(min)} = \frac{1}{\Delta t} = \frac{1}{0.0005 \text{ s}} = \mathbf{2000 \text{ \textbf{Hz}}} \]
+
 \end{document}
