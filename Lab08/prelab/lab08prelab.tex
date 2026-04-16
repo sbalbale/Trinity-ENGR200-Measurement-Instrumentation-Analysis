@@ -1,0 +1,325 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+
+\usepackage{graphicx}
+
+\usepackage{float}
+
+\usepackage{booktabs}
+
+\usepackage{siunitx}
+
+\usepackage{amsmath}
+
+\usepackage{amssymb}
+
+\usepackage{pgfplots}
+
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 8}
+
+\author{Sean Balbale}
+
+\date{April 17, 2026}
+
+\setlength{\parindent}{0in}
+
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+
+  \begin{center}
+
+    \vspace*{1in}
+
+    \Huge
+
+    \textbf{Pre-Lab 8}
+
+    \LARGE
+
+    First-Order Low-Pass Active Filter: Cutoff Frequency and Sampling Design
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} April 17, 2026
+
+    \vfill
+
+  \end{center}
+
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+
+% PROBLEM 1
+% ----------------------------------------------------------------------
+
+\section*{Problem 1: Cutoff Frequency Uncertainty Derivation}
+
+\textbf{Objective:} Using Equation 6.63 (Figliola \& Beasley, 7th ed.), derive an expression for the
+uncertainty $\delta f_c$ in the cutoff frequency of a first-order, inverting single-stage, low-pass
+active Butterworth filter as a function of $R_2$, $C_2$, $\delta R_2$, and $\delta C_2$. Compute
+$f_c$ and $\delta f_c$ for $R_2 = 20\,\text{k}\Omega$ (5\% uncertainty) and
+$C_2 = 0.1\,\mu\text{F}$ (20\% uncertainty).
+
+\textbf{Starting Point --- Equation 6.63:}
+
+The cutoff frequency of the active low-pass filter in Figure 6.34a is given by:
+
+\[
+  f_c = \frac{1}{2\pi R_2 C_2}
+\]
+
+Because $f_c$ is a function of two independently uncertain quantities ($R_2$ and $C_2$), the
+uncertainty is propagated using the RSS (root-sum-of-squares) method.
+
+\textbf{Step 1 --- RSS Uncertainty Formula:}
+
+\[
+  \delta f_c = \sqrt{
+    \left(\frac{\partial f_c}{\partial R_2}\,\delta R_2\right)^2
+    +
+    \left(\frac{\partial f_c}{\partial C_2}\,\delta C_2\right)^2
+  }
+\]
+
+\textbf{Step 2 --- Partial Derivatives:}
+
+\[
+  \frac{\partial f_c}{\partial R_2}
+  = \frac{\partial}{\partial R_2}\!\left(\frac{1}{2\pi R_2 C_2}\right)
+  = -\frac{1}{2\pi R_2^2 C_2}
+  = -\frac{f_c}{R_2}
+\]
+
+\[
+  \frac{\partial f_c}{\partial C_2}
+  = \frac{\partial}{\partial C_2}\!\left(\frac{1}{2\pi R_2 C_2}\right)
+  = -\frac{1}{2\pi R_2 C_2^2}
+  = -\frac{f_c}{C_2}
+\]
+
+\textbf{Step 3 --- General Uncertainty Expression:}
+
+Substituting the partial derivatives into the RSS formula and factoring $f_c$:
+
+\[
+  \boxed{
+    \delta f_c
+    = f_c \sqrt{
+      \left(\frac{\delta R_2}{R_2}\right)^2
+      +
+      \left(\frac{\delta C_2}{C_2}\right)^2
+    }
+  }
+\]
+
+This result makes complete physical sense: the fractional uncertainty in $f_c$ equals the RSS of the
+fractional uncertainties in $R_2$ and $C_2$, which follows directly from $f_c$'s multiplicative
+dependence on both components.
+
+\textbf{Step 4 --- Numerical Computation of $f_c$:}
+
+\[
+  f_c
+  = \frac{1}{2\pi\,(20 \times 10^3\,\Omega)(0.1 \times 10^{-6}\,\text{F})}
+  = \frac{1}{2\pi\,(2.0 \times 10^{-3})}
+  = \frac{1}{0.012566}
+  = \mathbf{79.6\,\text{Hz}}
+\]
+
+\textbf{Step 5 --- Numerical Computation of $\delta f_c$:}
+
+\[
+  \frac{\delta R_2}{R_2} = 0.05, \qquad \frac{\delta C_2}{C_2} = 0.20
+\]
+
+\[
+  \delta f_c
+  = 79.6\,\text{Hz} \times \sqrt{(0.05)^2 + (0.20)^2}
+  = 79.6 \times \sqrt{0.0025 + 0.0400}
+  = 79.6 \times \sqrt{0.0425}
+  = 79.6 \times 0.2062
+  = \mathbf{16.4\,\text{Hz}}
+\]
+
+\textbf{Result:}
+
+\[
+  \boxed{f_c = 79.6 \pm 16.4\,\text{Hz}}
+\]
+
+The dominant contributor to this $\pm 16.4\,\text{Hz}$ uncertainty is the capacitor's 20\%
+tolerance; the resistor's 5\% tolerance contributes minimally by comparison
+($0.05^2 \ll 0.20^2$). This directly implies that specifying a tighter capacitor tolerance would
+produce the greatest reduction in $\delta f_c$.
+
+\newpage
+
+% ----------------------------------------------------------------------
+
+% PROBLEM 2
+% ----------------------------------------------------------------------
+
+\section*{Problem 2: Anti-Aliasing Filter and Sampling Rate Design}
+
+\textbf{Objective:} For a signal with a highest relevant frequency of 300\,Hz that must be
+acquired remotely over an extended duration (constraining both $f_c$ and $f_s$), determine: (a)
+the required cutoff frequency for a first-order Butterworth filter; (b) the minimum sampling
+frequency to minimize aliasing; and (c) how cascaded higher-order filters reduce those values.
+
+% ------ PART A ------
+
+\subsection*{Part (a): Required Cutoff Frequency}
+
+\textbf{Methodology:}
+
+For a first-order ($k = 1$) low-pass Butterworth filter, the magnitude ratio is given by
+Equation 6.55a:
+
+\[
+  M(f) = \frac{1}{\sqrt{1 + \left(\dfrac{f}{f_c}\right)^2}}
+\]
+
+At $f = f_c$, $M(f_c) = 1/\sqrt{2} = 0.707$, which corresponds to the $-3\,\text{dB}$ passband
+boundary. To ensure the highest relevant frequency of 300\,Hz is not attenuated---that is, to
+guarantee it lies within the passband---the cutoff must be set at:
+
+\[
+  \boxed{f_c = 300\,\text{Hz}}
+\]
+
+At this setting, $M(300\,\text{Hz}) = 0.707$, placing the signal precisely at the defined passband
+boundary. Frequencies below 300\,Hz pass with an essentially flat magnitude ratio; frequencies
+above 300\,Hz are progressively attenuated at the first-order roll-off rate of $-20\,\text{dB/decade}$.
+
+% ------ PART B ------
+
+\subsection*{Part (b): Minimum Sampling Frequency}
+
+\textbf{Methodology:}
+
+While the Nyquist theorem establishes a theoretical minimum of $f_s = 2 \times 300 = 600\,\text{Hz}$,
+this is only valid if the signal contains no frequency content above $f_N = f_s/2 = 300\,\text{Hz}$.
+A first-order filter does not enforce this condition: its $-20\,\text{dB/decade}$ roll-off leaves
+significant spectral energy at frequencies well above $f_c$. Those residual components fold back
+as alias frequencies into the sampled record unless $f_N$ is set high enough that $M(f_N)$ is
+negligible.
+
+\textbf{Aliasing Criterion:} Require $M(f_N) \leq 0.01$ (i.e., $-40\,\text{dB}$ attenuation at the
+Nyquist frequency):
+
+\[
+  \frac{1}{\sqrt{1 + \left(\dfrac{f_N}{f_c}\right)^2}} \leq 0.01
+\]
+
+\textbf{Solving for $f_N$:}
+
+\[
+  1 + \left(\frac{f_N}{f_c}\right)^2 \geq \frac{1}{(0.01)^2} = 10{,}000
+\]
+
+\[
+  \left(\frac{f_N}{f_c}\right)^2 \geq 9{,}999
+  \implies
+  \frac{f_N}{f_c} \geq \sqrt{9{,}999} \approx 100
+\]
+
+\[
+  f_N \geq 100 \times f_c = 100 \times 300\,\text{Hz} = 30{,}000\,\text{Hz}
+\]
+
+\[
+  f_s = 2\,f_N \geq 60{,}000\,\text{Hz}
+\]
+
+\[
+  \boxed{f_s = 60\,\text{kHz}}
+\]
+
+This result conclusively demonstrates the fundamental limitation of single-stage, first-order
+filtering: while the signal of interest spans only 300\,Hz, the slow roll-off demands a sampling
+rate 200$\times$ the signal bandwidth to adequately suppress aliasing. This is precisely the
+data-volume burden the problem identifies as the binding constraint for remote, long-duration
+acquisition.
+
+% ------ PART C ------
+
+\subsection*{Part (c): Benefit of Cascaded Higher-Order Filters}
+
+\textbf{Methodology:}
+
+From Equation 6.55a, a $k$-stage cascaded Butterworth filter produces a magnitude ratio of:
+
+\[
+  M(f) = \frac{1}{\left[1 + \left(\dfrac{f}{f_c}\right)^{2k}\right]^{1/2}}
+\]
+
+The roll-off rate scales as $-20k\,\text{dB/decade}$, as shown in Figure 6.30 of the text. Applying
+the same $M(f_N) \leq 0.01$ criterion for $k = 2$ and $k = 3$:
+
+\textbf{$k = 2$ (Two-Stage):}
+
+\[
+  \frac{1}{\sqrt{1 + (f_N/f_c)^4}} \leq 0.01
+  \implies
+  (f_N/f_c)^4 \geq 9{,}999
+  \implies
+  \frac{f_N}{f_c} \geq 9{,}999^{1/4} \approx 10
+\]
+
+\[
+  f_N = 10 \times 300 = 3{,}000\,\text{Hz}, \qquad f_s = 6{,}000\,\text{Hz}
+\]
+
+\textbf{$k = 3$ (Three-Stage):}
+
+\[
+  \frac{1}{\sqrt{1 + (f_N/f_c)^6}} \leq 0.01
+  \implies
+  (f_N/f_c)^6 \geq 9{,}999
+  \implies
+  \frac{f_N}{f_c} \geq 9{,}999^{1/6} \approx 4.64
+\]
+
+\[
+  f_N \approx 1{,}392\,\text{Hz}, \qquad f_s \approx 2{,}784\,\text{Hz}
+\]
+
+\textbf{Comparison Summary:}
+
+\begin{table}[H]
+  \centering
+  \caption{Required Nyquist frequency and sampling rate vs.\ filter order for $M(f_N) \leq 0.01$,
+  $f_c = 300\,\text{Hz}$}
+  \label{tab:cascade_compare}
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Filter Order ($k$)} & \textbf{Roll-off Rate} & \textbf{$f_N$ Required} & \textbf{$f_s$ Required} \\
+    \midrule
+    1 (single stage)  & $-20\,\text{dB/decade}$  & 30{,}000\,Hz & 60{,}000\,Hz \\
+    2 (two stage)     & $-40\,\text{dB/decade}$  &  3{,}000\,Hz &  6{,}000\,Hz \\
+    3 (three stage)   & $-60\,\text{dB/decade}$  &  1{,}392\,Hz &  2{,}784\,Hz \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Two conclusions follow directly. First, the required sampling frequency drops by a factor of ten
+with each added stage---from 60\,kHz ($k=1$) to 6\,kHz ($k=2$) to $\approx 2.8$\,kHz ($k=3$)---
+reducing data volume proportionally. Second, as visible in Figure 6.30, higher-order filters
+maintain a flatter magnitude ratio throughout the passband; 300\,Hz sits deeper within the flat
+region of a multi-stage design, meaning $f_c$ could itself be reduced closer to 300\,Hz without
+attenuating the signal of interest. This further lowers $f_s$, directly relaxing both binding
+constraints identified in parts (a) and (b).
+
+\end{document}
