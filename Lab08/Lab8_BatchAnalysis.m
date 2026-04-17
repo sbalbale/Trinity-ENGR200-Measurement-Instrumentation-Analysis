@@ -8,14 +8,14 @@
 clear; clc; close all;
 
 %% 1. Define Directories & Setup
-fc = 75; % Update this to your designed cutoff frequency in Hz
+fc = 64; % Update this to your designed cutoff frequency in Hz
 specific_freqs = [fc/10, fc, 10*fc]; 
 
 dataDir = 'data';
 figDir = 'figures';
 
-if ~exist(figDir, 'dir')
-    mkdir(figDir);
+if ~exist('figures', 'dir')
+    mkdir('figures');
 end
 
 % Initialize Results Text File

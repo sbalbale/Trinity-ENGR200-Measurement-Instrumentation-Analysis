@@ -1,0 +1,39 @@
+Lab 8 Active Filter Bode Plot Analysis Results
+==============================================
+
+Designed Cutoff Frequency (fc): 64.00 Hz
+----------------------------------------------
+
+Freq:     1.00 Hz | RMS In: 0.352 V | RMS Out: 1.809 V | Mag:  14.21 dB | Phase: -181.43 deg
+Freq:     1.30 Hz | RMS In: 0.353 V | RMS Out: 1.809 V | Mag:  14.20 dB | Phase: -181.93 deg
+Freq:     1.69 Hz | RMS In: 0.351 V | RMS Out: 1.803 V | Mag:  14.20 dB | Phase: -178.45 deg
+Freq:    10.58 Hz | RMS In: 0.353 V | RMS Out: 1.776 V | Mag:  14.04 dB | Phase: -189.72 deg
+Freq:   111.92 Hz | RMS In: 0.352 V | RMS Out: 0.910 V | Mag:   8.24 dB | Phase: -238.12 deg
+Freq:  1184.06 Hz | RMS In: 0.352 V | RMS Out: 0.107 V | Mag: -10.36 dB | Phase: -264.28 deg
+Freq:    13.75 Hz | RMS In: 0.353 V | RMS Out: 1.759 V | Mag:  13.95 dB | Phase: -192.90 deg
+Freq:   145.46 Hz | RMS In: 0.352 V | RMS Out: 0.746 V | Mag:   6.52 dB | Phase: -245.07 deg
+Freq:  1538.87 Hz | RMS In: 0.352 V | RMS Out: 0.083 V | Mag: -12.61 dB | Phase: -265.92 deg
+Freq:    17.87 Hz | RMS In: 0.353 V | RMS Out: 1.727 V | Mag:  13.80 dB | Phase: -197.24 deg
+Freq:   189.05 Hz | RMS In: 0.352 V | RMS Out: 0.600 V | Mag:   4.63 dB | Phase: -248.41 deg
+Freq:     2.20 Hz | RMS In: 0.353 V | RMS Out: 1.807 V | Mag:  14.19 dB | Phase: -184.83 deg
+Freq:     2.85 Hz | RMS In: 0.351 V | RMS Out: 1.796 V | Mag:  14.18 dB | Phase: -181.81 deg
+Freq:  2000.00 Hz | RMS In: 0.352 V | RMS Out: 0.064 V | Mag: -14.80 dB | Phase: -259.20 deg
+Freq:    23.22 Hz | RMS In: 0.353 V | RMS Out: 1.684 V | Mag:  13.58 dB | Phase: -201.37 deg
+Freq:   245.70 Hz | RMS In: 0.352 V | RMS Out: 0.477 V | Mag:   2.62 dB | Phase: -252.97 deg
+Freq:     3.71 Hz | RMS In: 0.352 V | RMS Out: 1.801 V | Mag:  14.18 dB | Phase: -185.72 deg
+Freq:    30.18 Hz | RMS In: 0.352 V | RMS Out: 1.622 V | Mag:  13.26 dB | Phase: -205.67 deg
+Freq:   319.32 Hz | RMS In: 0.352 V | RMS Out: 0.373 V | Mag:   0.50 dB | Phase: -254.05 deg
+Freq:    39.23 Hz | RMS In: 0.353 V | RMS Out: 1.522 V | Mag:  12.71 dB | Phase: -211.98 deg
+Freq:     4.82 Hz | RMS In: 0.352 V | RMS Out: 1.796 V | Mag:  14.16 dB | Phase: -182.99 deg
+Freq:   415.01 Hz | RMS In: 0.352 V | RMS Out: 0.293 V | Mag:  -1.60 dB | Phase: -258.47 deg
+Freq:    50.98 Hz | RMS In: 0.352 V | RMS Out: 1.399 V | Mag:  11.97 dB | Phase: -219.32 deg
+Freq:   539.37 Hz | RMS In: 0.352 V | RMS Out: 0.229 V | Mag:  -3.75 dB | Phase: -260.19 deg
+Freq:     6.26 Hz | RMS In: 0.352 V | RMS Out: 1.793 V | Mag:  14.13 dB | Phase: -187.03 deg
+Freq:     6.30 Hz | RMS In: 0.352 V | RMS Out: 1.794 V | Mag:  14.14 dB | Phase: -186.52 deg
+Freq:    63.00 Hz | RMS In: 0.352 V | RMS Out: 1.278 V | Mag:  11.19 dB | Phase: -224.31 deg
+Freq:   630.00 Hz | RMS In: 0.352 V | RMS Out: 0.198 V | Mag:  -5.02 dB | Phase: -260.82 deg
+Freq:    66.26 Hz | RMS In: 0.352 V | RMS Out: 1.247 V | Mag:  10.98 dB | Phase: -227.32 deg
+Freq:   701.00 Hz | RMS In: 0.352 V | RMS Out: 0.177 V | Mag:  -5.98 dB | Phase: -264.98 deg
+Freq:     8.14 Hz | RMS In: 0.352 V | RMS Out: 1.784 V | Mag:  14.10 dB | Phase: -188.69 deg
+Freq:    86.12 Hz | RMS In: 0.352 V | RMS Out: 1.082 V | Mag:   9.74 dB | Phase: -233.14 deg
+Freq:   911.05 Hz | RMS In: 0.352 V | RMS Out: 0.139 V | Mag:  -8.08 dB | Phase: -259.10 deg

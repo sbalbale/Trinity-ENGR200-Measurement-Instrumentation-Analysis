@@ -1,4 +1,4 @@
-% File: Lab8_RecordData.m
+  % File: Lab8_RecordData.m
 % Purpose: Acquire and save raw voltage data for both input and output signals for Lab 8.
 %          Guides user through 30 logarithmically spaced frequencies plus 3 fc-dependent frequencies.
 
@@ -6,7 +6,7 @@ clear; clc;
 
 %% 1. Setup Parameters
 % --- Lab 8 specific parameters ---
-fc = 66.4; % Update this to your designed cutoff frequency in Hz
+fc = 63; % Update this to your designed cutoff frequency in Hz
 
 fs = 100000; % 100,000 samples per second
 duration = 5; % 5 seconds ensures at least 5 cycles for the 1 Hz low-end
