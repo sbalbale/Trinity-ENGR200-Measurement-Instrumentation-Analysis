@@ -6,7 +6,7 @@ clear; clc;
 
 %% 1. Setup Parameters
 % --- Lab 8 specific parameters ---
-fc = 75; % Update this to your designed cutoff frequency in Hz
+fc = 66.4; % Update this to your designed cutoff frequency in Hz
 
 fs = 100000; % 100,000 samples per second
 duration = 5; % 5 seconds ensures at least 5 cycles for the 1 Hz low-end
