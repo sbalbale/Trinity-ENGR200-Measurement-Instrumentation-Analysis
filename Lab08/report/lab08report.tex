@@ -1,0 +1,232 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\usepackage{subcaption} 
+\usepackage{listings}
+\usepackage{xcolor}
+
+% PGFPlots configuration
+\pgfplotsset{compat=1.18}
+\pgfplotsset{
+  standard/.style={
+    width=0.85\textwidth,
+    height=0.35\textwidth,
+    grid=both,
+    grid style={line width=.1pt, draw=gray!20},
+    major grid style={line width=.2pt,draw=gray!50},
+    xlabel={Time (ms)},
+    ylabel={Voltage (V)},
+    legend pos=north east,
+    legend style={font=\footnotesize},
+    tick align=outside,
+    tick pos=left,
+    scaled ticks=false
+  }
+}
+
+% Code listing style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{\textbf{Lab 8: Assessment \& Performance of an Active Filter}}
+\author{Sean Balbale}
+\date{April 17, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 8}
+
+    \LARGE
+    Assessment \& Performance of an Active Filter
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} Engineering 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} April 17, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+\section{Introduction}
+In digital data acquisition, high-frequency noise can irreparably corrupt measurements through aliasing if the noise components exceed the Nyquist limit. While increasing the sampling rate can mitigate this, it is often computationally expensive or unfeasible for long-duration data logging. The standard engineering solution is to condition the analog signal prior to digitization using a low-pass filter. 
+
+Building upon the inverting amplifier characterized in Lab 7, this laboratory introduces an active first-order low-pass Butterworth filter. Unlike passive filters that only attenuate signals, an active filter incorporates an operational amplifier (TL072) to provide a stable passband gain while simultaneously rejecting frequencies beyond a designated cutoff point ($f_c$). The objective of this experiment is to construct this active filter, dynamically sweep its input frequencies, and extract the resulting magnitude and phase data to generate an empirical Bode plot. This process verifies linear circuit theory and error propagation models while establishing a robust method for hardware-level anti-aliasing.
+
+\section{Experimental Procedure}
+The active low-pass filter was constructed using a TL072 operational amplifier configured in an inverting topology with a feedback capacitor. The physical discrete components were measured with a digital multimeter prior to assembly to establish baseline theoretical expectations:
+\begin{itemize}
+    \item Input Resistor ($R_1$): $\SI{9.834}{\kilo\ohm}$
+    \item Feedback Resistor ($R_2$): $\SI{50.550}{\kilo\ohm}$
+    \item Feedback Capacitor ($C_1$): $\SI{50.0}{\nano\farad}$
+\end{itemize}
+
+A function generator was used to supply a $\SI{1.0}{\volt}$ peak-to-peak sine wave with no DC offset. Using the NI-6321 DAQ system and MATLAB scripts (\texttt{Lab8\_RecordData.m}), the input frequency was logarithmically swept across 30 points ranging from $\SI{1}{\hertz}$ to $\SI{2000}{\hertz}$, along with targeted frequencies specifically evaluating the cutoff region. At each frequency, both the raw input and amplified output waveforms were simultaneously sampled at $f_s = \SI{100}{\kilo\hertz}$ for 5 seconds. The recorded arrays were then batch-processed to calculate the root-mean-square (RMS) magnitude ratio (in dB) and phase shift to construct the empirical Bode plot.
+
+\section{Results}
+The system's frequency response successfully matched the expected behavior of a first-order low-pass filter. Fig.~\ref{fig:timedomain} illustrates the time-domain waveforms at critical frequencies, demonstrating the passband gain, the cutoff phase-shift, and the high-frequency attenuation. Fig.~\ref{fig:bodeplot} provides the comprehensive empirical Bode plot mapping the magnitude and phase across the entire frequency sweep. Table~\ref{tab:bodedata} samples the numerical output from the batch analysis.
+
+\begin{table}[H]
+  \centering
+  \caption{Sample Data from Logarithmic Frequency Sweep}
+  \label{tab:bodedata}
+  \begin{tabular}{lSSSS}
+    \toprule
+    \textbf{Frequency (\si{\hertz})} & \textbf{Input RMS (\si{\volt})} & \textbf{Output RMS (\si{\volt})} & \textbf{Magnitude (\si{\decibel})} & \textbf{Phase Shift ($^\circ$)} \\
+    \midrule
+    1.00     & 0.352 & 1.809 & 14.21 & -181.43 \\
+    13.75    & 0.353 & 1.759 & 13.95 & -193.20 \\
+    50.98    & 0.352 & 1.399 & 11.97 & -219.32 \\
+    111.92   & 0.352 & 0.910 &  8.24 & -238.12 \\
+    1184.06  & 0.352 & 0.107 & -10.36 & -264.28 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Lab8_TimeDomain_6.3Hz.png}
+    \caption{6.3 Hz (Passband)}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Lab8_TimeDomain_63.0Hz.png}
+    \caption{63.0 Hz (Theoretical Cutoff)}
+  \end{subfigure}
+  \vskip\baselineskip
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Lab8_TimeDomain_66.3Hz.png}
+    \caption{66.3 Hz (Transition Region)}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../pictures/Lab8_TimeDomain_630.0Hz.png}
+    \caption{630.0 Hz (Stopband)}
+  \end{subfigure}
+  \caption{Time-domain waveforms demonstrating passband gain, cutoff attenuation, and stopband rejection.}
+  \label{fig:timedomain}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../pictures/Lab8_BodePlot.png}
+  \caption{Empirical Bode Plot for the Active Low-Pass Filter. The passband rests at $\approx \SI{14.2}{\decibel}$ before rolling off near the $\SI{63}{\hertz}$ cutoff frequency.}
+  \label{fig:bodeplot}
+\end{figure}
+
+\section{Discussion}
+
+\subsection{Bode Plot Validation (Questions 4a - 4f)}
+The empirical Bode plot closely mirrors linear circuit theory across all measured regions:
+
+\textbf{a. Passband Magnitude:} 
+The measured magnitude in the low-frequency passband remains steady at $\mathbf{\SI{14.21}{\decibel}}$. This aligns almost perfectly with the theoretical DC gain determined by the measured resistors:
+\[ K = -\frac{R_2}{R_1} = -\frac{50550}{9834} = -5.140 \text{ V/V} \]
+\[ M_{\text{dB}} = 20 \log_{10}(|{-5.140}|) = \mathbf{\SI{14.22}{\decibel}} \]
+
+\textbf{b. Passband Phase:} 
+The phase in the passband region sits at $\mathbf{-181.43^\circ}$. This matches exactly what was found in Lab 7. Because the signal is fed into the inverting terminal of the op-amp, it undergoes a baseline $-180^\circ$ phase inversion before any reactive capacitor lag occurs.
+
+\textbf{c. Cutoff Frequency and Uncertainty:} 
+The designed theoretical cutoff frequency is:
+\[ f_c = \frac{1}{2\pi R_2 C_1} = \frac{1}{2\pi (50550)(50.0 \times 10^{-9})} \approx \mathbf{\SI{63.0}{\hertz}} \]
+Using the uncertainty derivation from Pre-Lab 8 (assuming a 5\% tolerance for the resistor and 20\% for the capacitor), the uncertainty is:
+\[ \delta f_c = f_c \sqrt{\left( \frac{\delta R_2}{R_2} \right)^2 + \left( \frac{\delta C_1}{C_1} \right)^2} = 63.0 \sqrt{(0.05)^2 + (0.20)^2} \approx \mathbf{\SI{13.0}{\hertz}} \]
+The $-3\,\text{dB}$ point requires a magnitude of roughly $\SI{11.21}{\decibel}$ ($14.21 - 3.0$). Our empirical data crossed $\SI{11.97}{\decibel}$ at $\SI{51}{\hertz}$ and continued downward, placing the experimental $-3\,\text{dB}$ cutoff squarely within the $63.0 \pm 13.0 \text{ Hz}$ theoretical uncertainty window. 
+
+\textbf{d. Phase at Cutoff Frequency:} 
+For a single-pole low-pass filter, the reactive component introduces a $-45^\circ$ phase shift at $f_c$. Combined with the inverting op-amp, the expected phase is $-180^\circ - 45^\circ = \mathbf{-225^\circ}$. The data corroborates this, with the phase passing through $-219.32^\circ$ at $\SI{50.98}{\hertz}$ and dropping to $-238.12^\circ$ by $\SI{111.92}{\hertz}$.
+
+\textbf{e. High-Frequency Slope:} 
+A first-order filter should exhibit a $-20\,\text{dB/decade}$ roll-off. Analyzing approximately one decade of our stopband data (from $\SI{111.92}{\hertz}$ to $\SI{1184.06}{\hertz}$), the magnitude dropped from $\SI{8.24}{\decibel}$ down to $\SI{-10.36}{\decibel}$. This represents a drop of $\mathbf{\SI{18.6}{\decibel}}$, which strongly agrees with the expected first-order slope.
+
+\textbf{f. High-Frequency Phase Limit:} 
+As frequency increases to infinity, the capacitor acts entirely as a short circuit, introducing a maximum $-90^\circ$ reactive lag. Added to the inverting amplifier's baseline, the phase should approach an absolute limit of $\mathbf{-270^\circ}$. At our highest tested frequency ($\approx \SI{1.18}{\kilo\hertz}$), the phase reached $\mathbf{-264.28^\circ}$, confirming it asymptotically approaches the theoretical $-270^\circ$ floor.
+
+\subsection{Hypothesis: Saw Wave Response (Question 5)}
+If a saw wave with a fundamental frequency of $0.5 f_c$ ($\approx \SI{31.5}{\hertz}$) is passed into this active filter, the output will not resemble a standard saw wave. According to Fourier analysis, a sharp saw wave is composed of an infinite sum of integer harmonics ($f, 2f, 3f, 4f...$). 
+\begin{itemize}
+    \item The fundamental frequency ($0.5 f_c$) is well within the passband and will be fully amplified by the $-5.14\,\text{V/V}$ gain.
+    \item The second harmonic ($1.0 f_c \approx \SI{63}{\hertz}$) sits exactly at the cutoff; its amplitude will be attenuated by $-3\,\text{dB}$ and its phase will lag by $-45^\circ$.
+    \item Higher-order harmonics ($3f, 4f, 5f...$) will be severely attenuated by the $-20\,\text{dB/decade}$ stopband roll-off.
+\end{itemize}
+Because the sharp, abrupt edges of a saw wave are mathematically formed by these high-frequency harmonics, stripping them away will "round off" the signal. The resulting output will be a distorted, smoothed waveform that increasingly resembles a phase-shifted fundamental sine wave rather than a geometric sawtooth.
+
+\subsection{Limitations and Improvements}
+While the single-stage Butterworth filter successfully achieved anti-aliasing attenuation, the $-20\,\text{dB/decade}$ roll-off is relatively slow. Consequently, broadband noise sitting just above the cutoff frequency is not fully eliminated. To improve the isolation of the signal without requiring a massive increase in the DAQ sampling rate, a primary improvement would be cascading a second active stage to create a second-order filter. This would double the roll-off slope to $-40\,\text{dB/decade}$, providing a much sharper "knee" and superior rejection of proximal high-frequency noise.
+
+\section{Conclusion}
+This experiment successfully bridged analog signal conditioning with digital data acquisition. By characterizing the active low-pass filter, we confirmed that combining an operational amplifier with reactive RC components yields a circuit capable of both stable passband amplification ($\approx \SI{14.2}{\decibel}$) and predictable high-frequency rejection. The empirical Bode plot verified the $-20\,\text{dB/decade}$ magnitude roll-off and the $-270^\circ$ phase limits imposed by linear circuit theory. Implementing such filters is a critical, hardware-level step in modern engineering design, ensuring that physical signals are sufficiently bandwidth-limited to prevent digital aliasing prior to A/D conversion.
+
+\section{References}
+\begin{thebibliography}{2}
+  \bibitem{labmanual}
+  R. Gao, ``Laboratory 8: Assessment \& Performance of an Active Filter,'' \textit{Engineering 200 - Measurement, Instrumentation \& Analysis}, Trinity College, Spring 2026.
+
+  \bibitem{tl072}
+  Texas Instruments, ``TL07xx Low-Noise FET-Input Operational Amplifiers,'' \textit{Datasheet SLOS080V}, revised April 2023.
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{MATLAB Code}
+
+\subsection{Lab8\_RecordData.m}
+\lstinputlisting[language=Matlab]{../Lab8_RecordData.m}
+
+\subsection{Lab8\_BatchAnalysis.m}
+\lstinputlisting[language=Matlab]{../Lab8_BatchAnalysis.m}
+
+\newpage
+\section{Empirical Data Summary}
+The following log contains the numerical output extracted from the batch analysis.
+
+\subsection{results\_lab8.txt}
+\lstinputlisting{../results_lab8.txt}
+
+\end{document}
