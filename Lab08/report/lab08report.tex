@@ -168,6 +168,14 @@ The empirical Bode plot closely mirrors linear circuit theory across all measure
 The measured magnitude in the low-frequency passband remains steady at $\mathbf{\SI{14.21}{\decibel}}$. This aligns almost perfectly with the theoretical DC gain determined by the measured resistors:
 \[ K = -\frac{R_2}{R_1} = -\frac{50550}{9834} = -5.140 \text{ V/V} \]
 \[ M_{\text{dB}} = 20 \log_{10}(|{-5.140}|) = \mathbf{\SI{14.22}{\decibel}} \]
+Using the same resistor uncertainty assumption as above ($\delta R_1/R_1 = \delta R_2/R_2 = 5\%$), the gain uncertainty is propagated as:
+\[ G = \left|\frac{R_2}{R_1}\right|, \qquad \delta G = G\sqrt{\left(\frac{\delta R_2}{R_2}\right)^2 + \left(\frac{\delta R_1}{R_1}\right)^2} \]
+\[ \delta G = 5.140\sqrt{(0.05)^2 + (0.05)^2} = \mathbf{0.363 \text{ V/V}} \]
+So the passband gain is reported as:
+\[ G = \mathbf{5.14 \pm 0.36 \text{ V/V}} \]
+In decibels, this corresponds to approximately:
+\[ \delta M_{\text{dB}} \approx \frac{20}{\ln 10}\frac{\delta G}{G} = \frac{20}{\ln 10}(0.0707) \approx \mathbf{\SI{0.61}{\decibel}} \]
+so the gain is also $\mathbf{14.22 \pm 0.61\,\text{dB}}$.
 
 \textbf{b. Passband Phase:} 
 The phase in the passband region sits at $\mathbf{-181.43^\circ}$. This matches exactly what was found in Lab 7. Because the signal is fed into the inverting terminal of the op-amp, it undergoes a baseline $-180^\circ$ phase inversion before any reactive capacitor lag occurs.

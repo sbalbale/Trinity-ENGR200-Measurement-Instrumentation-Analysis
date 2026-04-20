@@ -1,0 +1,193 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{ENGR 200: Pre-Lab 9}
+\author{Sean Balbale}
+\date{April 24, 2026}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Pre-Lab 9}
+
+    \LARGE
+    First-Order System Step Response and Time Constant Uncertainty
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Course:} ENGR 200
+    \\ \textbf{Instructor:} Prof. R. Gao
+    \\ \textbf{Date:} April 24, 2026
+
+    \vfill
+
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% PROBLEM 1
+% ----------------------------------------------------------------------
+\section*{Problem 1: First-Order Step Response Timing}
+
+\textbf{Objective:} For a first-order system with time constant $\tau = 5\,\text{s}$ subjected to a
+step input, determine the time required for the response to reach 95\%, 99\%, and 100\% of the
+final value.
+
+\textbf{Methodology:}
+The normalized step response of a first-order system is given by:
+\[
+  y(t) = K\!\left(1 - e^{-t/\tau}\right)
+\]
+where $K$ is the final (steady-state) value and $\tau$ is the system time constant. Solving for
+the time at which the response reaches a fraction $p$ of the final value:
+\[
+  p = 1 - e^{-t/\tau}
+  \implies
+  e^{-t/\tau} = 1 - p
+  \implies
+  t = -\tau\ln(1 - p)
+\]
+
+\textbf{Part (a): 95\% of Final Value}
+
+\[
+  t_{95} = -\tau \ln(1 - 0.95) = -5\,\text{s} \cdot \ln(0.05) = 5\,\text{s} \cdot \ln(20)
+\]
+\[
+  t_{95} = 5 \times 2.9957 = \mathbf{14.98\,\text{s}}
+\]
+
+\textbf{Part (b): 99\% of Final Value}
+
+\[
+  t_{99} = -\tau \ln(1 - 0.99) = -5\,\text{s} \cdot \ln(0.01) = 5\,\text{s} \cdot \ln(100)
+\]
+\[
+  t_{99} = 5 \times 4.6052 = \mathbf{23.03\,\text{s}}
+\]
+
+\textbf{Part (c): 100\% of Final Value}
+
+Setting $p = 1$ yields $\ln(1 - 1) = \ln(0)$, which is undefined; the expression diverges. This
+is not a mathematical anomaly but an intrinsic physical property of exponential decay: the
+first-order step response approaches the final value asymptotically, meaning $y(t) \to K$ only
+as $t \to \infty$. A first-order system \textbf{never} reaches exactly 100\% of its final value
+at any finite time.
+
+% ----------------------------------------------------------------------
+% PROBLEM 2
+% ----------------------------------------------------------------------
+\section*{Problem 2: Time Constant Uncertainty and Comparison to Pre-Lab 8}
+
+\textbf{Objective:} For the first-order low-pass Butterworth filter from Lab~8 with
+$R_2 = 20\,\text{k}\Omega$ (5\% uncertainty) and $C_2 = 0.1\,\mu\text{F}$ (20\% uncertainty),
+determine the uncertainty of the time constant $\tau = R_2 C_2$ and compare its fractional
+uncertainty to that of the cutoff frequency $f_c$ computed in Pre-Lab~8.
+
+% ------ PART A ------
+\subsection*{Part (a): Uncertainty of the Time Constant}
+
+\textbf{Step 1 --- Nominal Time Constant:}
+\[
+  \tau = R_2 C_2 = (20 \times 10^3\,\Omega)(0.1 \times 10^{-6}\,\text{F})
+  = 2.00 \times 10^{-3}\,\text{s} = \mathbf{2.00\,\text{ms}}
+\]
+
+\textbf{Step 2 --- RSS Uncertainty Formula:}
+
+Because $\tau$ depends multiplicatively on two independently uncertain quantities, the uncertainty
+is propagated using the root-sum-of-squares (RSS) method:
+\[
+  \delta\tau = \sqrt{
+    \left(\frac{\partial \tau}{\partial R_2}\,\delta R_2\right)^2
+    +
+    \left(\frac{\partial \tau}{\partial C_2}\,\delta C_2\right)^2
+  }
+\]
+
+\textbf{Step 3 --- Partial Derivatives:}
+\[
+  \frac{\partial \tau}{\partial R_2} = C_2, \qquad
+  \frac{\partial \tau}{\partial C_2} = R_2
+\]
+
+\textbf{Step 4 --- General Uncertainty Expression:}
+
+Substituting and factoring $\tau = R_2 C_2$:
+\[
+  \delta\tau = \sqrt{(C_2\,\delta R_2)^2 + (R_2\,\delta C_2)^2}
+  = \tau\sqrt{
+    \left(\frac{\delta R_2}{R_2}\right)^2
+    +
+    \left(\frac{\delta C_2}{C_2}\right)^2
+  }
+\]
+
+This result makes complete physical sense: because $\tau$ is a simple product of $R_2$ and $C_2$,
+its fractional uncertainty equals the RSS of the individual fractional uncertainties --- the same
+structural form derived for $f_c$ in Pre-Lab~8.
+
+\textbf{Step 5 --- Numerical Computation:}
+\[
+  \frac{\delta R_2}{R_2} = 0.05, \qquad \frac{\delta C_2}{C_2} = 0.20
+\]
+\[
+  \delta\tau
+  = 2.00\,\text{ms} \times \sqrt{(0.05)^2 + (0.20)^2}
+  = 2.00\,\text{ms} \times \sqrt{0.0025 + 0.0400}
+  = 2.00\,\text{ms} \times \sqrt{0.0425}
+\]
+\[
+  \delta\tau = 2.00\,\text{ms} \times 0.2062 = \mathbf{0.412\,\text{ms}}
+\]
+
+\textbf{Result:}
+\[
+  \boxed{\tau = 2.00 \pm 0.41\,\text{ms}}
+\]
+
+% ------ PART B ------
+\subsection*{Part (b): Comparison to Pre-Lab 8 Cutoff Frequency Uncertainty}
+
+\textbf{Pre-Lab 8 Result (for reference):} $f_c = 79.6 \pm 16.4\,\text{Hz}$
+
+Computing fractional uncertainties for direct comparison:
+
+\[
+  \frac{\delta\tau}{\tau} = \frac{0.412\,\text{ms}}{2.00\,\text{ms}} = 0.206 = \mathbf{20.6\%}
+\]
+\[
+  \frac{\delta f_c}{f_c} = \frac{16.4\,\text{Hz}}{79.6\,\text{Hz}} = 0.206 = \mathbf{20.6\%}
+\]
+
+The fractional uncertainties are \textbf{identical at 20.6\%}. This is not a coincidence; it is a
+direct algebraic consequence of the inverse relationship between the two quantities:
+\[
+  f_c = \frac{1}{2\pi\tau}
+  \implies
+  \tau = \frac{1}{2\pi f_c}
+\]
+Since $2\pi$ is an exact constant, any proportional uncertainty in $\tau$ maps one-to-one to the
+same proportional uncertainty in $f_c$. While the two quantities carry different units and
+different nominal values, their fractional uncertainties are necessarily equal; specifying a
+tighter tolerance on $C_2$ (the dominant contributor, with $0.20^2 \gg 0.05^2$) would reduce
+both $\delta\tau/\tau$ and $\delta f_c/f_c$ by the same percentage simultaneously.
+
+\end{document}
