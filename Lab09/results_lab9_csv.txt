@@ -1,0 +1,12 @@
+Lab 9: First-Order System Transient Response — Analysis Results
+================================================================
+
+Method 1 | 95% threshold  (t = 3*tau):
+  Mean tau = 16.4269 ms  |  Std Dev = 38.0488 ms
+
+Method 2 | 99.3% threshold  (t = 5*tau):
+  Mean tau = 13.2293 ms  |  Std Dev = 29.0539 ms
+
+Method 3 | Exponential Curve Fit:
+  Mean tau = 0.5985 ms  |  Std Dev = 0.1650 ms
+

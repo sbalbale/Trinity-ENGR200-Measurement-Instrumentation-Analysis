@@ -10,7 +10,7 @@ clear; clc; close all;
 
 %% 1. Setup Parameters
 fs         = 100000;           % Sampling rate [Hz]
-fc         = 318;               % Designed cutoff frequency from Lab 8 [Hz]
+fc         = 64;               % Designed cutoff frequency
 tau_exp    = 1 / (2*pi*fc);   % Expected time constant: tau = 1/(2*pi*fc) [s]
 n_runs     = 30;
 task_label = 'StepResponse';
@@ -45,7 +45,8 @@ for i = 1:n_runs
     end
 
     load(filename, 't', 'v_out', 'fs');
-
+    v_out = -v_out;
+    
     % Convert timetable duration to seconds if necessary
     if isduration(t)
         t_sec = seconds(t);
