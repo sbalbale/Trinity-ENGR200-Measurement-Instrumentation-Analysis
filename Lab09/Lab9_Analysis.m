@@ -10,7 +10,7 @@ clear; clc; close all;
 
 %% 1. Setup Parameters
 fs         = 100000;           % Sampling rate [Hz]
-fc         = 64;               % Designed cutoff frequency from Lab 8 [Hz]
+fc         = 318;               % Designed cutoff frequency from Lab 8 [Hz]
 tau_exp    = 1 / (2*pi*fc);   % Expected time constant: tau = 1/(2*pi*fc) [s]
 n_runs     = 30;
 task_label = 'StepResponse';
