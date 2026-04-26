@@ -10,7 +10,10 @@ clear; clc; close all;
 
 %% 1. Setup Parameters
 fs         = 100000;           % Sampling rate [Hz]
-fc         = 64;               % Designed cutoff frequency
+R1         = 50.842e3;         % Measured input resistor [Ohm]
+R2         = 50.850e3;         % Measured feedback resistor [Ohm]
+C1         = 50.0e-9;          % Measured feedback capacitor [F]
+fc         = 1 / (2*pi*R2*C1); % Cutoff frequency from measured components
 tau_exp    = 1 / (2*pi*fc);   % Expected time constant: tau = 1/(2*pi*fc) [s]
 n_runs     = 30;
 task_label = 'StepResponse';
@@ -24,7 +27,10 @@ end
 fprintf('==============================================\n');
 fprintf('  Lab 9: First-Order System Transient Analysis\n');
 fprintf('==============================================\n');
-fprintf('Designed fc  : %.2f Hz\n', fc);
+fprintf('Measured R1  : %.3f kOhm\n', R1/1000);
+fprintf('Measured R2  : %.3f kOhm\n', R2/1000);
+fprintf('Measured C1  : %.1f nF\n', C1*1e9);
+fprintf('Calculated fc: %.2f Hz\n', fc);
 fprintf('Expected tau : %.4f ms  (1 / 2*pi*fc)\n\n', tau_exp * 1000);
 
 %% 2. Allocate Storage
@@ -147,9 +153,12 @@ fprintf('Note: tau [s] = 1/omega_c [rad/s]. To convert: omega_c = 2*pi*fc.\n');
 %% 6. Save Results to Text File
 results_file = 'results_lab9.txt';
 fileID       = fopen(results_file, 'w');
-fprintf(fileID, 'Lab 9: First-Order System Transient Response — Analysis Results\n');
+fprintf(fileID, 'Lab 9: First-Order System Transient Response - Analysis Results\n');
 fprintf(fileID, '================================================================\n\n');
-fprintf(fileID, 'Designed fc         : %.2f Hz\n', fc);
+fprintf(fileID, 'Measured R1         : %.3f kOhm\n', R1/1000);
+fprintf(fileID, 'Measured R2         : %.3f kOhm\n', R2/1000);
+fprintf(fileID, 'Measured C1         : %.1f nF\n', C1*1e9);
+fprintf(fileID, 'Calculated fc       : %.2f Hz\n', fc);
 fprintf(fileID, 'Expected tau        : %.4f ms   [tau = 1 / (2*pi*fc)]\n\n', tau_exp*1000);
 fprintf(fileID, 'Method 1 | 95%% threshold  (t = 3*tau):\n');
 fprintf(fileID, '  Mean tau = %.4f ms  |  Std Dev = %.4f ms\n', tau1_mean*1000, tau1_std*1000);
@@ -170,7 +179,7 @@ end
 fclose(fileID);
 fprintf('\nResults saved to: %s\n', results_file);
 
-%% 7. Task 4a — Three Response Curves: 0 <= t <= 6*tau
+%% 7. Task 4a - Three Response Curves: 0 <= t <= 6*tau
 % Use the Method 3 (curve-fit) mean tau as the best estimate for axis limits.
 tau_plot = tau3_mean;
 t_6tau   = 6 * tau_plot;
@@ -184,19 +193,34 @@ fig1 = figure('Name', 'Lab 9: Step Response (0 to 6tau)', ...
     'Position', [100, 100, 800, 500]);
 hold on;
 
+% Track plotted amplitudes in the 0..6*tau window to set a sensible y-range
+y_main_max = -inf;
+
 for k = 1:length(plot_runs)
     run_idx = plot_runs(k);
-    plot(response_data{run_idx}.t * 1000, response_data{run_idx}.v, ...
+    t_run = response_data{run_idx}.t;
+    v_run = response_data{run_idx}.v;
+
+    plot(t_run * 1000, v_run, ...
         'Color', colors{k}, 'LineWidth', 1.5, ...
         'DisplayName', sprintf('Run %d', run_idx));
+
+    in_main_window = t_run <= t_6tau;
+    if any(in_main_window)
+        y_main_max = max(y_main_max, max(v_run(in_main_window)));
+    end
 end
 
 hold off;
 xlim([0, t_6tau * 1000]);
-ylim([0, 1.15]);
+if isfinite(y_main_max)
+    ylim([0, 1.05 * y_main_max]);
+else
+    ylim([0, 1.15]);
+end
 xlabel('Time (ms)', 'FontWeight', 'bold');
 ylabel('Output Voltage (V)', 'FontWeight', 'bold');
-title('First-Order Step Response — Three Independent Runs  (0 \leq t \leq 6\tau)', ...
+title('First-Order Step Response - Three Independent Runs  (0 \leq t \leq 6\tau)', ...
     'FontSize', 13);
 legend('Location', 'southeast', 'FontSize', 11);
 grid on;
@@ -206,10 +230,14 @@ savefig(fig1, fullfile(figDir, 'Lab9_StepResponse_0to6tau.fig'));
 saveas(fig1,  fullfile(figDir, 'Lab9_StepResponse_0to6tau.png'));
 fprintf('Figure saved: Lab9_StepResponse_0to6tau.png\n');
 
-%% 8. Task 4b — Zoomed View: 4*tau <= t <= 6*tau with t=5*tau marker
+%% 8. Task 4b - Zoomed View: 4*tau <= t <= 6*tau with t=5*tau marker
 fig2 = figure('Name', 'Lab 9: Step Response Zoomed (4tau to 6tau)', ...
     'Position', [150, 150, 800, 500]);
 hold on;
+
+% Track amplitudes only in the zoom window for a tighter y-range
+y_zoom_min = inf;
+y_zoom_max = -inf;
 
 for k = 1:length(plot_runs)
     run_idx = plot_runs(k);
@@ -229,6 +257,12 @@ for k = 1:length(plot_runs)
             'LineWidth', 1.2, ...
             'HandleVisibility', 'off');
     end
+
+    in_zoom_window = (t_sec >= t_4tau) & (t_sec <= t_6tau);
+    if any(in_zoom_window)
+        y_zoom_min = min(y_zoom_min, min(v(in_zoom_window)));
+        y_zoom_max = max(y_zoom_max, max(v(in_zoom_window)));
+    end
 end
 
 % Vertical dashed line at t = 5*tau
@@ -240,9 +274,14 @@ xline(t_5tau * 1000, '--k', 't = 5\tau', ...
 
 hold off;
 xlim([t_4tau * 1000, t_6tau * 1000]);
+if isfinite(y_zoom_min) && isfinite(y_zoom_max)
+    y_span = max(y_zoom_max - y_zoom_min, 0.01);
+    y_pad  = 0.12 * y_span;
+    ylim([y_zoom_min - y_pad, y_zoom_max + y_pad]);
+end
 xlabel('Time (ms)', 'FontWeight', 'bold');
 ylabel('Output Voltage (V)', 'FontWeight', 'bold');
-title('Step Response — Zoomed View  (4\tau \leq t \leq 6\tau)', 'FontSize', 13);
+title('Step Response - Zoomed View  (4\tau \leq t \leq 6\tau)', 'FontSize', 13);
 legend('Location', 'best', 'FontSize', 11);
 grid on;
 set(gca, 'FontSize', 12);

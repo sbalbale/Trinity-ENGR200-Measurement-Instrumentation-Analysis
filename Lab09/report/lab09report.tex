@@ -52,6 +52,7 @@
   showspaces=false,
   showstringspaces=false,
   showtabs=false,
+  inputencoding=latin1,
   tabsize=2
 }
 \lstset{style=mystyle}
@@ -96,16 +97,16 @@ In this experiment, we extend our analysis of the active low-pass filter (Lab 8)
 \section{Experimental Procedure}
 The active low-pass filter constructed in Lab 8 served as the device under test. Recall its component values:
 \begin{itemize}
-  \item Input Resistor ($R_1$): $\SI{50.250}{\kilo\ohm}$
-  \item Feedback Resistor ($R_2$): $\SI{50.550}{\kilo\ohm}$
+  \item Input Resistor ($R_1$): $\SI{50.842}{\kilo\ohm}$
+  \item Feedback Resistor ($R_2$): $\SI{50.850}{\kilo\ohm}$
   \item Feedback Capacitor ($C_1$): $\SI{50.0}{\nano\farad}$
 \end{itemize}
 
 The designed cutoff frequency is:
-\[ f_c = \frac{1}{2\pi R_2 C_1} = \frac{1}{2\pi (50550)(50.0 \times 10^{-9})} = \mathbf{\SI{63.0}{\hertz}} \]
+\[ f_c = \frac{1}{2\pi R_2 C_1} = \frac{1}{2\pi (50.850 \times 10^3)(50.0 \times 10^{-9})} = \mathbf{\SI{62.60}{\hertz}} \]
 
 This corresponds to a theoretical time constant of:
-\[ \tau_{\text{theory}} = \frac{1}{2\pi f_c} = \frac{1}{2\pi (63)} \approx \mathbf{\SI{2.487}{\milli\second}} \]
+\[ \tau_{\text{theory}} = \frac{1}{2\pi f_c} = \frac{1}{2\pi (62.60)} \approx \mathbf{\SI{2.5425}{\milli\second}} \]
 
 A function generator supplied a step input transitioning from \SI{0}{\volt} to \SI{1}{\volt}. Using the NI-6321 DAQ system and MATLAB (\texttt{Lab9\_RecordData.m}), the output waveform was simultaneously sampled at $f_s = \SI{100}{\kilo\hertz}$ for a total of $1$ second per run (500 ms high, 500 ms low). This procedure was repeated 30 times to establish a statistical ensemble.
 
@@ -130,7 +131,7 @@ The three methods yielded the following mean time constants across the 30 trials
     \toprule
     \textbf{Method} & \textbf{Mean $\tau$ (ms)} & \textbf{Std Dev (ms)} & \textbf{Derived $f_c$ (Hz)} \\
     \midrule
-    Theory (Lab 8)              & 2.4868                   & —                    & 64.00 \\
+    Theory (from measured $R_2,C_1$) & 2.5425                   & —                    & 62.60 \\
     Method 1 (95\% threshold)   & 3.7191                   & 0.2294               & 42.79 \\
     Method 2 (99.3\% threshold) & 5.0085                   & 3.4343               & 31.78 \\
     Method 3 (Curve fit)        & 3.7388                   & 0.1183               & 42.57 \\
@@ -176,15 +177,15 @@ The three methods produce significantly different results, and understanding why
 A striking observation: all three measured time constants exceed the theoretical value.
 
 \begin{align*}
-  \tau_{\text{theory}} &= \SI{2.487}{\milli\second} \\
+  \tau_{\text{theory}} &= \SI{2.5425}{\milli\second} \\
   \tau_{\text{measured (Method 3)}} &= \SI{3.739}{\milli\second} \\
-  \text{Discrepancy} &= 3.739 - 2.487 = \SI{1.252}{\milli\second} \approx 50\%
+  \text{Discrepancy} &= 3.739 - 2.5425 = \SI{1.1965}{\milli\second} \approx 47.1\%
 \end{align*}
 
-This 50\% excess in measured tau translates directly to a reduced cutoff frequency: the measured $f_c \approx \SI{42.6}{\hertz}$ versus the designed $f_c = \SI{64}{\hertz}$. Several physical mechanisms could explain this:
+This 47.1\% excess in measured tau translates directly to a reduced cutoff frequency: the measured $f_c \approx \SI{42.6}{\hertz}$ versus the component-derived $f_c = \SI{62.6}{\hertz}$. Several physical mechanisms could explain this:
 
 \textbf{(1) Component Tolerance:} The \SI{50}{\nano\farad} capacitor was specified as a ceramic or film capacitor, typically ±\SI{5}{\percent} to ±\SI{20}{\percent}. If $C_1$ is actually \SI{75}{\nano\farad} (a \SI{50}{\percent} high deviation), then:
-\[ \tau_{\text{adjusted}} = \frac{1}{2\pi R_2 C_1'} = \frac{1}{2\pi (50550)(75 \times 10^{-9})} \approx \SI{3.731}{\milli\second} \]
+\[ \tau_{\text{adjusted}} = \frac{1}{2\pi R_2 C_1'} = \frac{1}{2\pi (50850)(75 \times 10^{-9})} \approx \SI{3.789}{\milli\second} \]
 This matches our measured value almost exactly. A capacitor tolerance exceeding ±20\% is plausible for a hand-selected, unmarked component.
 
 \textbf{(2) Op-Amp Frequency Compensation:} The TL072 itself has internal compensation networks that may introduce additional poles or zeros near the signal bandwidth. While the frequency response in Lab 8 was dominated by the RC feedback network, parasitic effects could manifest as increased effective time constants in step response measurements.
@@ -218,10 +219,10 @@ The step response provides direct information about settling time. The $5\tau$ r
 
 For applications requiring precise steady-state measurements (e.g., ADC sampling), this settling time must be respected. A typical data acquisition workflow would sample at $t > 20$ ms after a step input to ensure the filter has stabilized.
 
-Moreover, the relationship $\tau = 1/(2\pi f_c)$ confirmed by our frequency response (Lab 8) and transient analysis (this lab) demonstrates that the circuit is truly a first-order low-pass filter. A system characterized by a \SI{64}{\hertz} cutoff in the frequency domain must exhibit a \SI{2.49}{\milli\second} time constant in the time domain. Our measured \SI{3.74}{\milli\second} suggests either component tolerance issues or unmodeled parasitic effects—a discrepancy worth resolving in next-iteration design.
+Moreover, the relationship $\tau = 1/(2\pi f_c)$ confirmed by our frequency response (Lab 8) and transient analysis (this lab) demonstrates that the circuit is truly a first-order low-pass filter. A system characterized by a \SI{62.6}{\hertz} cutoff from measured components must exhibit a \SI{2.54}{\milli\second} time constant in the time domain. Our measured \SI{3.74}{\milli\second} suggests either component tolerance issues or unmodeled parasitic effects—a discrepancy worth resolving in next-iteration design.
 
 \section{Conclusion}
-This experiment successfully characterized the transient response of the active low-pass filter via step-input analysis. Across 30 independent trials, we extracted the time constant using three methods and demonstrated that exponential curve fitting yields the most statistically robust estimate: $\tau = \SI{3.739 \pm 0.118}{\milli\second}$. This measured time constant translates to a cutoff frequency of $f_c \approx \SI{42.6}{\hertz}$, a 33\% reduction from the designed value of \SI{64}{\hertz}. While component tolerance (particularly capacitor deviation) is the most plausible explanation, future work should verify capacitor value via direct measurement. The absence of overshoot and the excellent run-to-run repeatability confirm that the circuit behaves as a canonical first-order system, making it suitable for anti-aliasing applications where predictable, stable frequency response is required.
+This experiment successfully characterized the transient response of the active low-pass filter via step-input analysis. Across 30 independent trials, we extracted the time constant using three methods and demonstrated that exponential curve fitting yields the most statistically robust estimate: $\tau = \SI{3.739 \pm 0.118}{\milli\second}$. This measured time constant translates to a cutoff frequency of $f_c \approx \SI{42.6}{\hertz}$, a 31.9\% reduction from the component-derived value of \SI{62.6}{\hertz}. While component tolerance (particularly capacitor deviation) is the most plausible explanation, future work should verify capacitor value via direct measurement. The absence of overshoot and the excellent run-to-run repeatability confirm that the circuit behaves as a canonical first-order system, making it suitable for anti-aliasing applications where predictable, stable frequency response is required.
 
 \section{References}
 \begin{thebibliography}{3}
@@ -243,15 +244,13 @@ The complete MATLAB analysis code used to extract time constants is shown below:
 
 \subsection{Lab9\_RecordData.m}
 This script records the step response of the active low-pass filter across 30 independent trials using the NI-6321 DAQ system at a sampling rate of \SI{100}{\kilo\hertz}.
-
+\lstinputlisting[language=Matlab]{../Lab9_RecordData.m}
 \subsection{Lab9\_Analysis.m}
 This script processes all 30 recorded datasets and extracts the time constant using three methods: 95\% threshold crossing, 99.3\% threshold crossing, and exponential curve fitting. It generates the time-domain plots and computes statistical summaries.
-
+\lstinputlisting[language=Matlab]{../Lab9_Analysis.m}
 \newpage
-\section{Complete Experimental Data}
-The following contains the full per-run measurements from all 30 trials.
-
 \subsection{Numerical Results}
 Mean time constants and per-run values are listed in \texttt{results\_lab9.txt}, included in the project repository.
+\lstinputlisting{../results_lab9.txt}
 
 \end{document}

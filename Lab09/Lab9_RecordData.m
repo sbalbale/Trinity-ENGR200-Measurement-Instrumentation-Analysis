@@ -29,10 +29,10 @@ fprintf('Number of independent runs: %d\n\n', n_runs);
 fprintf('Initializing NI DAQ...\n');
 dq = daq("ni");
 
-% Analog input — records filter output (connect filter Eo -> ai0)
+% Analog input - records filter output (connect filter Eo -> ai0)
 addinput(dq, "Dev1", "ai0", "Voltage");
 
-% Analog output — sends step signal to filter input (connect ao0 -> filter Ei)
+% Analog output - sends step signal to filter input (connect ao0 -> filter Ei)
 addoutput(dq, "Dev1", "ao0", "Voltage");
 
 dq.Rate = fs;
@@ -42,7 +42,7 @@ fprintf('DAQ initialized. Rate set to %d Hz.\n\n', fs);
 fprintf('=== WIRING CHECK ===\n');
 fprintf('  DAQ ao0  --->  Filter Input  (Ei)\n');
 fprintf('  Filter Output (Eo)  --->  DAQ ai0\n');
-fprintf('  Ensure ±15 V rails are ON before proceeding.\n');
+fprintf('  Ensure +/-15 V rails are ON before proceeding.\n');
 fprintf('====================\n\n');
 
 %% 5. Create Data Directory
@@ -54,7 +54,7 @@ end
 input('Circuit ready? Press Enter to begin data collection...');
 fprintf('\n');
 
-%% 6. Data Collection Loop — 30 Independent Runs
+%% 6. Data Collection Loop - 30 Independent Runs
 for i = 1:n_runs
     fprintf('--- Run %d of %d ---\n', i, n_runs);
     fprintf('Sending step and recording response...\n');
@@ -68,7 +68,7 @@ for i = 1:n_runs
     t     = data.Time;
     v_out = data.Dev1_ai0;   % Filter output voltage [V]
 
-    % Save dataset — unique filename per run
+    % Save dataset - unique filename per run
     base_filename = sprintf('StepResponse_Run%02d_fs%d_%s_raw.mat', i, fs, task_label);
     filename      = fullfile('data', base_filename);
     save(filename, 't', 'step_signal', 'v_out', 'fs');
