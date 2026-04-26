@@ -13,8 +13,19 @@ fs         = 100000;           % Sampling rate [Hz]
 R1         = 50.842e3;         % Measured input resistor [Ohm]
 R2         = 50.850e3;         % Measured feedback resistor [Ohm]
 C1         = 50.0e-9;          % Measured feedback capacitor [F]
+
+% Measurement uncertainty assumptions from instrument resolution
+dR1        = 1.0;              % +/- 1 Ohm
+dR2        = 1.0;              % +/- 1 Ohm
+dC1        = 0.1e-9;           % +/- 0.1 nF
+
+gain_mag   = R2 / R1;          % |DC gain| of inverting active low-pass
+gain_unc   = gain_mag * sqrt((dR1 / R1)^2 + (dR2 / R2)^2);
+
 fc         = 1 / (2*pi*R2*C1); % Cutoff frequency from measured components
+fc_unc     = fc * sqrt((dR2 / R2)^2 + (dC1 / C1)^2);
 tau_exp    = 1 / (2*pi*fc);   % Expected time constant: tau = 1/(2*pi*fc) [s]
+tau_exp_unc = tau_exp * (fc_unc / fc);
 n_runs     = 30;
 task_label = 'StepResponse';
 dataDir    = 'data';
@@ -30,13 +41,20 @@ fprintf('==============================================\n');
 fprintf('Measured R1  : %.3f kOhm\n', R1/1000);
 fprintf('Measured R2  : %.3f kOhm\n', R2/1000);
 fprintf('Measured C1  : %.1f nF\n', C1*1e9);
+fprintf('Assumed dR1  : +/- %.1f Ohm\n', dR1);
+fprintf('Assumed dR2  : +/- %.1f Ohm\n', dR2);
+fprintf('Assumed dC1  : +/- %.1f nF\n', dC1*1e9);
+fprintf('|Gain| (R2/R1): %.6f +/- %.6f\n', gain_mag, gain_unc);
 fprintf('Calculated fc: %.2f Hz\n', fc);
-fprintf('Expected tau : %.4f ms  (1 / 2*pi*fc)\n\n', tau_exp * 1000);
+fprintf('Calculated fc uncertainty: +/- %.3f Hz\n', fc_unc);
+fprintf('Expected tau : %.4f ms  (1 / 2*pi*fc)\n', tau_exp * 1000);
+fprintf('Expected tau uncertainty: +/- %.4f ms\n\n', tau_exp_unc * 1000);
 
 %% 2. Allocate Storage
 tau_method1    = NaN(n_runs, 1);   % 95% threshold  -> t = 3*tau
 tau_method2    = NaN(n_runs, 1);   % 99.3% threshold -> t = 5*tau
 tau_method3    = NaN(n_runs, 1);   % Exponential curve fit
+V0_runs        = NaN(n_runs, 1);   % Steady-state output (for measured gain)
 response_data  = cell(n_runs, 1);  % Full datasets for plotting
 
 %% 3. Load and Process Each Dataset
@@ -77,6 +95,7 @@ for i = 1:n_runs
     response_data{i}.t    = t_rise;
     response_data{i}.v    = v_rise;
     response_data{i}.V0   = V0;
+    V0_runs(i)            = V0;
 
     % ---------------------------------------------------------------
     % Method 1: Time to reach 95 % of V0  (theory: t95 = 3*tau)
@@ -129,6 +148,8 @@ tau2_mean = mean(tau_method2, 'omitnan');
 tau2_std  = std( tau_method2, 'omitnan');
 tau3_mean = mean(tau_method3, 'omitnan');
 tau3_std  = std( tau_method3, 'omitnan');
+gain_meas_mean = mean(V0_runs, 'omitnan');   % Vin step is 1 V
+gain_meas_std  = std( V0_runs, 'omitnan');
 
 %% 5. Command Window Report
 fprintf('--- Time Constant (tau) Results (%d runs) ---\n', n_runs);
@@ -138,6 +159,8 @@ fprintf('Method 2 | 99.3%% threshold (t = 5*tau):\n');
 fprintf('         Mean = %.4f ms  |  Std Dev = %.4f ms\n\n', tau2_mean*1000, tau2_std*1000);
 fprintf('Method 3 | Exponential curve fit:\n');
 fprintf('         Mean = %.4f ms  |  Std Dev = %.4f ms\n\n', tau3_mean*1000, tau3_std*1000);
+fprintf('Measured steady-state gain from data (V0/Vin, Vin=1V):\n');
+fprintf('         Mean = %.4f  |  Std Dev = %.4f\n\n', gain_meas_mean, gain_meas_std);
 
 % Compare measured tau to cutoff frequency
 fprintf('--- Comparison: tau vs. fc ---\n');
@@ -158,8 +181,14 @@ fprintf(fileID, '===============================================================
 fprintf(fileID, 'Measured R1         : %.3f kOhm\n', R1/1000);
 fprintf(fileID, 'Measured R2         : %.3f kOhm\n', R2/1000);
 fprintf(fileID, 'Measured C1         : %.1f nF\n', C1*1e9);
+fprintf(fileID, 'Assumed dR1         : +/- %.1f Ohm\n', dR1);
+fprintf(fileID, 'Assumed dR2         : +/- %.1f Ohm\n', dR2);
+fprintf(fileID, 'Assumed dC1         : +/- %.1f nF\n', dC1*1e9);
+fprintf(fileID, 'Calculated |Gain|   : %.6f +/- %.6f\n', gain_mag, gain_unc);
 fprintf(fileID, 'Calculated fc       : %.2f Hz\n', fc);
-fprintf(fileID, 'Expected tau        : %.4f ms   [tau = 1 / (2*pi*fc)]\n\n', tau_exp*1000);
+fprintf(fileID, 'Calculated fc unc.  : +/- %.3f Hz\n', fc_unc);
+fprintf(fileID, 'Expected tau        : %.4f ms   [tau = 1 / (2*pi*fc)]\n', tau_exp*1000);
+fprintf(fileID, 'Expected tau unc.   : +/- %.4f ms\n\n', tau_exp_unc*1000);
 fprintf(fileID, 'Method 1 | 95%% threshold  (t = 3*tau):\n');
 fprintf(fileID, '  Mean tau = %.4f ms  |  Std Dev = %.4f ms\n', tau1_mean*1000, tau1_std*1000);
 fprintf(fileID, '  Derived fc = %.2f Hz\n\n', 1/(2*pi*tau1_mean));
@@ -169,6 +198,8 @@ fprintf(fileID, '  Derived fc = %.2f Hz\n\n', 1/(2*pi*tau2_mean));
 fprintf(fileID, 'Method 3 | Exponential Curve Fit:\n');
 fprintf(fileID, '  Mean tau = %.4f ms  |  Std Dev = %.4f ms\n', tau3_mean*1000, tau3_std*1000);
 fprintf(fileID, '  Derived fc = %.2f Hz\n\n', 1/(2*pi*tau3_mean));
+fprintf(fileID, 'Measured Gain (V0/Vin, Vin=1V):\n');
+fprintf(fileID, '  Mean gain = %.4f  |  Std Dev = %.4f\n\n', gain_meas_mean, gain_meas_std);
 fprintf(fileID, '----------------------------------------------------------------\n');
 fprintf(fileID, 'Per-Run Values:\n');
 fprintf(fileID, '%-6s  %-12s  %-12s  %-12s\n', 'Run', 'tau_M1 (ms)', 'tau_M2 (ms)', 'tau_M3 (ms)');
@@ -250,12 +281,18 @@ for k = 1:length(plot_runs)
     % Mark the amplitude at t = 5*tau for each run
     idx_5tau = find(t_sec >= t_5tau, 1, 'first');
     if ~isempty(idx_5tau)
-        plot(t_sec(idx_5tau) * 1000, v(idx_5tau), 'o', ...
+        x_5tau_ms = t_sec(idx_5tau) * 1000;
+        y_5tau    = v(idx_5tau);
+
+        plot(x_5tau_ms, y_5tau, 'o', ...
             'MarkerSize', 10, ...
             'MarkerFaceColor', colors{k}, ...
             'MarkerEdgeColor', 'k', ...
             'LineWidth', 1.2, ...
             'HandleVisibility', 'off');
+
+        text(x_5tau_ms + 0.06, y_5tau, sprintf('%.3f V', y_5tau), ...
+            'Color', colors{k}, 'FontSize', 10, 'FontWeight', 'bold');
     end
 
     in_zoom_window = (t_sec >= t_4tau) & (t_sec <= t_6tau);

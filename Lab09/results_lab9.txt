@@ -4,8 +4,14 @@ Lab 9: First-Order System Transient Response - Analysis Results
 Measured R1         : 50.842 kOhm
 Measured R2         : 50.850 kOhm
 Measured C1         : 50.0 nF
+Assumed dR1         : +/- 1.0 Ohm
+Assumed dR2         : +/- 1.0 Ohm
+Assumed dC1         : +/- 0.1 nF
+Calculated |Gain|   : 1.000157 +/- 0.000028
 Calculated fc       : 62.60 Hz
+Calculated fc unc.  : +/- 0.125 Hz
 Expected tau        : 2.5425 ms   [tau = 1 / (2*pi*fc)]
+Expected tau unc.   : +/- 0.0051 ms
 
 Method 1 | 95% threshold  (t = 3*tau):
   Mean tau = 3.7191 ms  |  Std Dev = 0.2294 ms
@@ -18,6 +24,9 @@ Method 2 | 99.3% threshold  (t = 5*tau):
 Method 3 | Exponential Curve Fit:
   Mean tau = 3.7360 ms  |  Std Dev = 0.1172 ms
   Derived fc = 42.60 Hz
+
+Measured Gain (V0/Vin, Vin=1V):
+  Mean gain = 1.6188  |  Std Dev = 0.0600
 
 ----------------------------------------------------------------
 Per-Run Values:
